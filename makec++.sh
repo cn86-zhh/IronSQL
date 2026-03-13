@@ -70,6 +70,7 @@ function StartCompileIronSQL()
     local header_linux="${SRC}/linux"
     local header_windows="${SRC}/windows"
     local header_stdiostreams="${SRC}/stdiostreams"
+    local header_cross_platform="${SRC}/.include"
     
     readonly binary_file
     readonly log_file
@@ -127,6 +128,7 @@ EOF
         -I "${header_windows}" \
         -I "${header_linux}" \
         -I "${header_stdiostreams}" \
+        -I "${header_cross_platform}" \
         "${cpp_file_array[@]}" "${SRC}/resource.o" -o "${binary_file}" 2>"${log_file}"
         then
             # Clean up resource files
@@ -150,6 +152,7 @@ EOF
         -I "${header_linux}" \
         -I "${header_windows}" \
         -I "${header_stdiostreams}" \
+        -I "${header_cross_platform}" \
         "${cpp_file_array[@]}" -o "${binary_file}" 2>"${log_file}"
         then
             CompileSuccessPrompt
