@@ -118,7 +118,7 @@ EOF
         windres "${SRC}/resource.rc" -o "${SRC}/resource.o"
         
         # Add resource object to compile command
-        if g++ -std=c++20 -static -static-libgcc -static-libstdc++ \
+        if g++ -std=c++20 -static \
         -I "${header_include}" \
         -I "${header_release}" \
         -I "${header_kernel}" \
@@ -141,7 +141,7 @@ EOF
         # Linux system - compile without icon
         echo -e "${Y}Detected Linux system, compiling without icon...${E}"
         
-        if g++ -std=c++20 -static -static-libgcc -static-libstdc++ \
+        if g++ -std=c++20 -static \
         -I "${header_include}" \
         -I "${header_release}" \
         -I "${header_kernel}" \
