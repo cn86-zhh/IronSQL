@@ -62,6 +62,33 @@ namespace IronProces
         static void dropTable(const std::string &database_name, const std::string &table_name);
         static void linkTable(const std::string &database_name, const std::string &table_src_name,
                               const std::string &table_dst_name, const std::string &new_table_name);
+
+    private:
+        static void mergeTablesSimpleAppend(const IronStruct::Table &src_table, 
+                                           const IronStruct::Table &dst_table, 
+                                           IronStruct::Table &new_table, 
+                                           const std::vector<std::string> &new_fields, 
+                                           const std::vector<std::string> &src_fields, 
+                                           const std::vector<std::string> &dst_fields, 
+                                           std::vector<int> &field_value_widths);
+        static void mergeTablesWithJoin(const IronStruct::Table &src_table, 
+                                       const IronStruct::Table &dst_table, 
+                                       IronStruct::Table &new_table, 
+                                       const std::vector<std::string> &new_fields, 
+                                       const std::vector<std::string> &src_fields, 
+                                       const std::vector<std::string> &dst_fields, 
+                                       const std::vector<std::string> &common_fields, 
+                                       std::vector<int> &field_value_widths);
+        static std::vector<IronStruct::Value> createMergedRow(const std::vector<IronStruct::Value> &source_row, 
+                                                           const std::vector<std::string> &new_fields, 
+                                                           const std::vector<std::string> &source_fields);
+        static void mergeRowData(std::vector<IronStruct::Value> &new_row, 
+                               const std::vector<IronStruct::Value> &dst_row, 
+                               const std::vector<std::string> &new_fields, 
+                               const std::vector<std::string> &src_fields, 
+                               const std::vector<std::string> &dst_fields);
+        static void updateFieldWidths(const std::vector<IronStruct::Value> &row, 
+                                    std::vector<int> &field_value_widths);
     }; // class Core
 } // namespace IronProces
 

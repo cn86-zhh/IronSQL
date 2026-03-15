@@ -965,8 +965,9 @@ namespace IronProces
     /**
      * @brief Links two tables in a database.
      *
-     * This function creates a new table in the specified database by merging the fields and
-     * types of the source and destination tables.
+     * This function creates a new table by merging fields and data from two existing tables.
+     * If the tables share common fields, it merges rows based on the first common field.
+     * If no common fields exist, it simply appends rows from both tables.
      *
      * @param database_name The name of the database containing the tables.
      * @param table_src_name The name of the source table.
@@ -1093,73 +1094,238 @@ namespace IronProces
         auto &new_table_ref = IronObject::Interface::databases[database_index].tables[table_index];
 
         std::vector<int> field_value_widths(new_fields.size(), 0);
+        std::vector<std::string> common_fields;
 
-        // merge table values for destination table
-        for (const auto &row : dst_table.values)
+        for (const auto &field : src_fields)
         {
-            std::vector<IronStruct::Value> new_row;
-            for (size_t i = 0; i < new_fields.size(); ++i)
+            if (std::find(dst_fields.begin(), dst_fields.end(), field) != dst_fields.end())
             {
-                const std::string &field = new_fields[i];
-                auto it = std::find(dst_fields.begin(), dst_fields.end(), field);
-                if (it != dst_fields.end())
-                {
-                    size_t dst_index = std::distance(dst_fields.begin(), it);
-                    if (dst_index < row.size())
-                    {
-                        new_row.push_back(row[dst_index]);
-
-                        std::string value_str = IronVerify::Inspector::valueToString(row[dst_index]);
-                        field_value_widths[i] = std::max(field_value_widths[i], IronHandle::Strings::getDisplayWidth(value_str));
-                    }
-                    else
-                    {
-                        // index out of bounds, add default value
-                        new_row.push_back({});
-                    }
-                }
-                else
-                {
-                    // field does not exist, add default value
-                    new_row.push_back({});
-                }
+                common_fields.push_back(field);
             }
-            new_table_ref.values.push_back(new_row);
         }
 
-        // merge table values for source table
-        for (const auto &row : src_table.values)
+        if (common_fields.empty())
         {
-            std::vector<IronStruct::Value> new_row;
-            for (size_t i = 0; i < new_fields.size(); ++i)
-            {
-                const std::string &field = new_fields[i];
-                auto it = std::find(src_fields.begin(), src_fields.end(), field);
-                if (it != src_fields.end())
-                {
-                    size_t src_index = std::distance(src_fields.begin(), it);
-                    if (src_index < row.size())
-                    {
-                        new_row.push_back(row[src_index]);
-
-                        std::string value_str = IronVerify::Inspector::valueToString(row[src_index]);
-                        field_value_widths[i] = std::max(field_value_widths[i], IronHandle::Strings::getDisplayWidth(value_str));
-                    }
-                    else
-                    {
-                        // index out of bounds, add default value
-                        new_row.push_back({});
-                    }
-                }
-                else
-                {
-                    // field does not exist, add default value
-                    new_row.push_back({});
-                }
-            }
-            new_table_ref.values.push_back(new_row);
+            // No common fields, use simple append mode
+            mergeTablesSimpleAppend(src_table, dst_table, new_table_ref, new_fields,
+                                    src_fields, dst_fields, field_value_widths);
+        }
+        else
+        {
+            // Have common fields, use join mode
+            mergeTablesWithJoin(src_table, dst_table, new_table_ref, new_fields,
+                                src_fields, dst_fields, common_fields, field_value_widths);
         }
 
         _IronInnerProces_::_Level::_Data::_recordDataRowWidthToMap(database_name, new_table_name, field_value_widths);
+    }
+
+    /**
+     * @brief Merges two tables using simple append mode.
+     *
+     * When no common fields are found, this function appends all rows from both tables
+     * to the new table, filling missing fields with default values.
+     *
+     * @param src_table Source table to merge from.
+     * @param dst_table Destination table to merge from.
+     * @param new_table New table to merge into.
+     * @param new_fields Combined fields from both tables.
+     * @param src_fields Fields from source table.
+     * @param dst_fields Fields from destination table.
+     * @param field_value_widths Output parameter for field width calculation.
+     */
+    void Core::mergeTablesSimpleAppend(const IronStruct::Table &src_table,
+                                       const IronStruct::Table &dst_table,
+                                       IronStruct::Table &new_table,
+                                       const std::vector<std::string> &new_fields,
+                                       const std::vector<std::string> &src_fields,
+                                       const std::vector<std::string> &dst_fields,
+                                       std::vector<int> &field_value_widths)
+    {
+        // Process destination table rows
+        for (const auto &row : dst_table.values)
+        {
+            std::vector<IronStruct::Value> new_row = createMergedRow(row, new_fields, dst_fields);
+            updateFieldWidths(new_row, field_value_widths);
+            new_table.values.push_back(new_row);
+        }
+
+        // Process source table rows
+        for (const auto &row : src_table.values)
+        {
+            std::vector<IronStruct::Value> new_row = createMergedRow(row, new_fields, src_fields);
+            updateFieldWidths(new_row, field_value_widths);
+            new_table.values.push_back(new_row);
+        }
+    }
+
+    /**
+     * @brief Merges two tables using join mode based on common fields.
+     *
+     * When common fields are found, this function merges rows based on the first common field,
+     * creating combined rows with data from both tables.
+     *
+     * @param src_table Source table to merge from.
+     * @param dst_table Destination table to merge from.
+     * @param new_table New table to merge into.
+     * @param new_fields Combined fields from both tables.
+     * @param src_fields Fields from source table.
+     * @param dst_fields Fields from destination table.
+     * @param common_fields Common fields for linking.
+     * @param field_value_widths Output parameter for field width calculation.
+     */
+    void Core::mergeTablesWithJoin(const IronStruct::Table &src_table,
+                                   const IronStruct::Table &dst_table,
+                                   IronStruct::Table &new_table,
+                                   const std::vector<std::string> &new_fields,
+                                   const std::vector<std::string> &src_fields,
+                                   const std::vector<std::string> &dst_fields,
+                                   const std::vector<std::string> &common_fields,
+                                   std::vector<int> &field_value_widths)
+    {
+        const std::string &link_field = common_fields[0];
+
+        // Find link field indices in both tables
+        size_t src_link_index = std::distance(src_fields.begin(),
+                                              std::find(src_fields.begin(), src_fields.end(), link_field));
+        size_t dst_link_index = std::distance(dst_fields.begin(),
+                                              std::find(dst_fields.begin(), dst_fields.end(), link_field));
+
+        // Build mapping of link field values to destination row indices
+        std::unordered_map<std::string, size_t> dst_row_map;
+        for (size_t row_idx = 0; row_idx < dst_table.values.size(); ++row_idx)
+        {
+            const auto &row = dst_table.values[row_idx];
+            if (dst_link_index >= row.size())
+            {
+                continue;
+            }
+            std::string key = IronVerify::Inspector::valueToString(row[dst_link_index]);
+            dst_row_map[key] = row_idx;
+        }
+
+        // Track merged destination rows
+        std::vector<bool> dst_row_merged(dst_table.values.size(), false);
+
+        // Process source table rows and merge with destination
+        for (const auto &src_row : src_table.values)
+        {
+            std::vector<IronStruct::Value> new_row = createMergedRow(src_row, new_fields, src_fields);
+
+            // Try to find matching destination row
+            if (src_link_index < src_row.size())
+            {
+                std::string link_value = IronVerify::Inspector::valueToString(src_row[src_link_index]);
+                auto map_it = dst_row_map.find(link_value);
+                if (map_it != dst_row_map.end())
+                {
+                    size_t dst_row_idx = map_it->second;
+                    const auto &dst_row = dst_table.values[dst_row_idx];
+                    dst_row_merged[dst_row_idx] = true;
+
+                    // Merge destination data for fields not in source
+                    mergeRowData(new_row, dst_row, new_fields, src_fields, dst_fields);
+                }
+            }
+
+            updateFieldWidths(new_row, field_value_widths);
+            new_table.values.push_back(new_row);
+        }
+
+        // Add unmerged destination rows
+        for (size_t row_idx = 0; row_idx < dst_table.values.size(); ++row_idx)
+        {
+            if (!dst_row_merged[row_idx])
+            {
+                std::vector<IronStruct::Value> new_row = createMergedRow(dst_table.values[row_idx],
+                                                                         new_fields, dst_fields);
+                updateFieldWidths(new_row, field_value_widths);
+                new_table.values.push_back(new_row);
+            }
+        }
+    }
+
+    /**
+     * @brief Creates a merged row by mapping values from a source row to combined fields.
+     *
+     * @param source_row Source row data.
+     * @param new_fields Combined fields from both tables.
+     * @param source_fields Fields from the source table.
+     * @return Merged row with values mapped to combined fields.
+     */
+    std::vector<IronStruct::Value> Core::createMergedRow(const std::vector<IronStruct::Value> &source_row,
+                                                         const std::vector<std::string> &new_fields,
+                                                         const std::vector<std::string> &source_fields)
+    {
+        std::vector<IronStruct::Value> new_row(new_fields.size());
+
+        for (size_t i = 0; i < new_fields.size(); ++i)
+        {
+            const std::string &field = new_fields[i];
+            auto it = std::find(source_fields.begin(), source_fields.end(), field);
+            if (it != source_fields.end())
+            {
+                size_t src_index = std::distance(source_fields.begin(), it);
+                if (src_index < source_row.size())
+                {
+                    new_row[i] = source_row[src_index];
+                }
+            }
+        }
+
+        return new_row;
+    }
+
+    /**
+     * @brief Merges data from a destination row into an existing merged row.
+     *
+     * @param new_row Existing merged row to update.
+     * @param dst_row Destination row with data to merge.
+     * @param new_fields Combined fields from both tables.
+     * @param src_fields Fields from source table.
+     * @param dst_fields Fields from destination table.
+     */
+    void Core::mergeRowData(std::vector<IronStruct::Value> &new_row,
+                            const std::vector<IronStruct::Value> &dst_row,
+                            const std::vector<std::string> &new_fields,
+                            const std::vector<std::string> &src_fields,
+                            const std::vector<std::string> &dst_fields)
+    {
+        for (size_t i = 0; i < new_fields.size(); ++i)
+        {
+            const std::string &field = new_fields[i];
+            // Only merge fields not in source table
+            if (std::find(src_fields.begin(), src_fields.end(), field) != src_fields.end())
+            {
+                continue;
+            }
+
+            auto it = std::find(dst_fields.begin(), dst_fields.end(), field);
+            if (it != dst_fields.end())
+            {
+                size_t dst_index = std::distance(dst_fields.begin(), it);
+                if (dst_index < dst_row.size())
+                {
+                    new_row[i] = dst_row[dst_index];
+                }
+            }
+        }
+    }
+
+    /**
+     * @brief Updates field width calculations based on values in a row.
+     *
+     * @param row Row with values to calculate widths from.
+     * @param field_value_widths Current field widths to update.
+     */
+    void Core::updateFieldWidths(const std::vector<IronStruct::Value> &row,
+                                 std::vector<int> &field_value_widths)
+    {
+        for (size_t i = 0; i < row.size() && i < field_value_widths.size(); ++i)
+        {
+            std::string value_str = IronVerify::Inspector::valueToString(row[i]);
+            field_value_widths[i] = std::max(field_value_widths[i],
+                                             IronHandle::Strings::getDisplayWidth(value_str));
+        }
     }
 } // namespace IronProces

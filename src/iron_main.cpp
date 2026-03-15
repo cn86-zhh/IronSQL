@@ -52,18 +52,22 @@ namespace IronMain
         SetConsoleCP(65001);       // set console input encoding to UTF-8
 #endif
 
-        IronHelp::ShowHelpInformation::welcome(IronKeywds::Kw::enable_());
+        bool isInteractive = false;
+#ifdef _WIN32
+        isInteractive = _isatty(_fileno(stdin));
+#else
+        isInteractive = isatty(fileno(stdin));
+#endif
+
+        if (isInteractive)
+        {
+            IronHelp::ShowHelpInformation::welcome(IronKeywds::Kw::enable_());
+        }
 
         std::string buffer; // used to accumulate multi-line statements
 
         while (true)
         {
-            bool isInteractive = false;
-#ifdef _WIN32
-            isInteractive = _isatty(_fileno(stdin));
-#else
-            isInteractive = isatty(fileno(stdin));
-#endif
             if (isInteractive && buffer.empty())
             {
                 std::cout << "IronSQL> ";
