@@ -1,9 +1,20 @@
 #include "iron_logsystem.hpp"
+#include "iron_load_settings_conf.hpp"
 
 namespace IronLogSystem
 {
-    static bool enableDebug{false};
-    static bool enableDebugHighlight{false};
+    namespace load = IronLoadSettingsConf;
+
+    static const std::string ENABLE_BASE_DEBUG{"ENABLE_BASE_DEBUG"};
+    static const std::string ENABLE_DEBUG_HIGHLIGHT{"ENABLE_DEBUG_HIGHLIGHT"};
+
+#if defined(_WIN32) || defined(_WIN64) // windows
+    static bool enableDebug{load::Loader::loadSettingsConfFile("C:\\Users\\IronSQL\\.Config\\ironsql_settings.conf", ENABLE_BASE_DEBUG)};
+    static bool enableDebugHighlight{load::Loader::loadSettingsConfFile("C:\\Users\\IronSQL\\.Config\\ironsql_settings.conf", ENABLE_DEBUG_HIGHLIGHT)};
+#else // linux
+    static bool enableDebug{load::Loader::loadSettingsConfFile("/etc/ironsql/.config/ironsql_settings.conf", ENABLE_BASE_DEBUG)};
+    static bool enableDebugHighlight{load::Loader::loadSettingsConfFile("/etc/ironsql/.config/ironsql_settings.conf", ENABLE_DEBUG_HIGHLIGHT)};
+#endif
 
     /**
      * @brief Set debug mode.

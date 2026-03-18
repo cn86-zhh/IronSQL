@@ -71,6 +71,7 @@ function StartCompileIronSQL()
     local header_windows="${SRC}/windows"
     local header_stdiostreams="${SRC}/stdiostreams"
     local header_cross_platform="${SRC}/.include"
+    local header_loads="${SRC}/loads"
     
     readonly binary_file
     readonly log_file
@@ -97,6 +98,7 @@ function StartCompileIronSQL()
         "${SRC}/kernel/iron_syntax.cpp"
         "${SRC}/logsystem/iron_logsystem.cpp"
         "${SRC}/stdiostreams/iron_stdost.cpp"
+        "${SRC}/loads/iron_load_settings_conf.cpp"
     )
     
     # Detect operating system
@@ -129,6 +131,7 @@ EOF
         -I "${header_linux}" \
         -I "${header_stdiostreams}" \
         -I "${header_cross_platform}" \
+        -I "${header_loads}" \
         "${cpp_file_array[@]}" "${SRC}/resource.o" -o "${binary_file}" 2>"${log_file}"
         then
             # Clean up resource files
@@ -153,11 +156,21 @@ EOF
         -I "${header_windows}" \
         -I "${header_stdiostreams}" \
         -I "${header_cross_platform}" \
+        -I "${header_loads}" \
         "${cpp_file_array[@]}" -o "${binary_file}" 2>"${log_file}"
         then
             CompileSuccessPrompt
         else
             CompileFailedPrompt
+        fi
+    fi
+    
+    # shellcheck disable=SC2181
+    if [[ ${?} -eq 0 ]]; then
+        if ! /bin/cp -rpf "${SRC}/.config" "${BIN}/.config"; then
+            echo -e "${R}Error: cannot copy config file to binary directory${E}"
+        else
+            echo -e "${G}Success: config file copied to binary directory${E}"
         fi
     fi
 }
