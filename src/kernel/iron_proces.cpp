@@ -99,6 +99,7 @@ namespace _IronInnerProces_
             static auto _obtainTableNameMaxWidth(const std::string &database_name) -> int;
 
         public:
+            static auto _inspectEmptyTables(const std::string &database_name) -> bool;
             static auto _inspectExistTable(const std::string &database_name, const std::string &table_name) -> bool;
         }; // private class _Table
 
@@ -300,6 +301,21 @@ namespace _IronInnerProces_
     auto _Level::_Table::_obtainTableIndex(const std::string &database_name, const std::string &table_name) -> int
     {
         return tables_map[database_name].table_map[table_name];
+    }
+
+    /**
+     * @brief Checks if there are no tables in the database.
+     *
+     * @param database_name The name of the database.
+     * @return true if there are no tables, false otherwise.
+     */
+    auto _Level::_Table::_inspectEmptyTables(const std::string &database_name) -> bool
+    {
+        if (tables_map[database_name].table_map.empty())
+        {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -1327,5 +1343,282 @@ namespace IronProces
             field_value_widths[i] = std::max(field_value_widths[i],
                                              IronHandle::Strings::getDisplayWidth(value_str));
         }
+    }
+
+    namespace Detail
+    {
+        /**
+         * @brief Creates a row with values mapped to the given fields.
+         * @param table The table to get field information from.
+         * @param row The source row data.
+         * @param fields The fields to map values to.
+         * @return A new row with values mapped to the given fields.
+         */
+        std::vector<std::string> createMappedRow(const IronStruct::Table &table,
+                                                 const std::vector<IronStruct::Value> &row,
+                                                 const std::vector<std::string> &fields)
+        {
+            std::vector<std::string> new_row;
+            new_row.reserve(fields.size());
+
+            for (const auto &field : fields)
+            {
+                auto field_it = std::find_if(table.fields.begin(), table.fields.end(),
+                                             [&field](const IronStruct::Field &f)
+                                             { return f.name == field; });
+                if (field_it != table.fields.end())
+                {
+                    size_t field_index = std::distance(table.fields.begin(), field_it);
+                    if (field_index < row.size())
+                    {
+                        new_row.push_back(IronVerify::Inspector::valueToString(row[field_index]));
+                    }
+                    else
+                    {
+                        new_row.push_back("");
+                    }
+                }
+                else
+                {
+                    new_row.push_back("");
+                }
+            }
+
+            return new_row;
+        }
+
+        /**
+         * @brief Finds common fields between a table and a list of fields.
+         * @param table The table to check.
+         * @param fields The fields to compare with.
+         * @return A vector of common field names.
+         */
+        std::vector<std::string> findCommonFields(const IronStruct::Table &table,
+                                                  const std::vector<std::string> &fields)
+        {
+            std::vector<std::string> common_fields;
+            for (const auto &field : table.fields)
+            {
+                if (std::find(fields.begin(), fields.end(), field.name) != fields.end())
+                {
+                    common_fields.push_back(field.name);
+                }
+            }
+            return common_fields;
+        }
+
+        /**
+         * @brief Merges table data with join based on common fields.
+         * @param current_table The current table to merge.
+         * @param merged_table_data The merged data to update.
+         * @param fields The combined fields.
+         * @param common_fields The common fields for joining.
+         */
+        void mergeWithJoin(const IronStruct::Table &current_table,
+                           std::vector<std::vector<std::string>> &merged_table_data,
+                           const std::vector<std::string> &fields,
+                           const std::vector<std::string> &common_fields)
+        {
+            if (common_fields.empty())
+                return;
+
+            const std::string &link_field = common_fields[0];
+
+            // 找到连接字段在当前表和结果表中的索引
+            size_t current_link_index = std::distance(current_table.fields.begin(),
+                                                      std::find_if(current_table.fields.begin(), current_table.fields.end(),
+                                                                   [&link_field](const IronStruct::Field &f)
+                                                                   { return f.name == link_field; }));
+
+            size_t result_link_index = std::distance(fields.begin(),
+                                                     std::find(fields.begin(), fields.end(), link_field));
+
+            // 构建当前表的连接值映射
+            std::unordered_map<std::string, size_t> current_row_map;
+            for (size_t row_idx = 0; row_idx < current_table.values.size(); ++row_idx)
+            {
+                const auto &row = current_table.values[row_idx];
+                if (current_link_index < row.size())
+                {
+                    std::string key = IronVerify::Inspector::valueToString(row[current_link_index]);
+                    current_row_map[key] = row_idx;
+                }
+            }
+
+            // 合并数据
+            for (auto &result_row : merged_table_data)
+            {
+                if (result_link_index < result_row.size())
+                {
+                    std::string link_value = result_row[result_link_index];
+                    auto map_it = current_row_map.find(link_value);
+                    if (map_it != current_row_map.end())
+                    {
+                        size_t current_row_idx = map_it->second;
+                        const auto &current_row = current_table.values[current_row_idx];
+
+                        // 合并当前表的数据
+                        for (size_t j = 0; j < fields.size(); ++j)
+                        {
+                            const std::string &field = fields[j];
+                            auto field_it = std::find_if(current_table.fields.begin(), current_table.fields.end(),
+                                                         [&field](const IronStruct::Field &f)
+                                                         { return f.name == field; });
+                            if (field_it != current_table.fields.end())
+                            {
+                                size_t field_index = std::distance(current_table.fields.begin(), field_it);
+                                if (field_index < current_row.size())
+                                {
+                                    result_row[j] = IronVerify::Inspector::valueToString(current_row[field_index]);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // 添加当前表中未匹配的行
+            std::vector<bool> current_row_merged(current_table.values.size(), false);
+            for (size_t row_idx = 0; row_idx < current_table.values.size(); ++row_idx)
+            {
+                const auto &row = current_table.values[row_idx];
+                if (current_link_index < row.size())
+                {
+                    std::string link_value = IronVerify::Inspector::valueToString(row[current_link_index]);
+                    auto map_it = current_row_map.find(link_value);
+                    if (map_it != current_row_map.end())
+                    {
+                        current_row_merged[row_idx] = true;
+                    }
+                }
+            }
+
+            for (size_t row_idx = 0; row_idx < current_table.values.size(); ++row_idx)
+            {
+                if (!current_row_merged[row_idx])
+                {
+                    merged_table_data.push_back(createMappedRow(current_table, current_table.values[row_idx], fields));
+                }
+            }
+        }
+
+        /**
+         * @brief Appends table data to merged data.
+         * @param current_table The current table to append.
+         * @param merged_table_data The merged data to update.
+         * @param fields The combined fields.
+         */
+        void appendTableData(const IronStruct::Table &current_table,
+                             std::vector<std::vector<std::string>> &merged_table_data,
+                             const std::vector<std::string> &fields)
+        {
+            for (const auto &row : current_table.values)
+            {
+                merged_table_data.push_back(createMappedRow(current_table, row, fields));
+            }
+        }
+    } // namespace Detail
+
+    /**
+     * @brief Links and shows table data, merging fields and rows from multiple tables.
+     * return detail: tuple<merged_table_data, field_names>
+     * @param database_name Name of the database.
+     * @param table_names Names of tables to link and show.
+     * @return Tuple containing merged table data and field names.
+     */
+    auto Gets::linkShowTable(const std::string &database_name, const std::vector<std::string> &table_names)
+        -> std::tuple<std::vector<std::vector<std::string>>, std::vector<std::string>>
+    {
+        // 检查数据库是否存在
+        if (database_name.empty() ||
+            _IronInnerProces_::_Level::_Database::_inspectEmptyDatabases() ||
+            !_IronInnerProces_::_Level::_Database::_inspectExistDatabase(database_name))
+        {
+            ios::err64(kwl::error() + "database not exist: '" + database_name + "'");
+            return {};
+        }
+
+        // 检查表参数合法性
+        if (table_names.size() < 2)
+        {
+            ios::err64(kwl::error() + "at least 2 tables are required");
+            return {};
+        }
+
+        // 检查表是否存在
+        for (const auto &table_name : table_names)
+        {
+            if (_IronInnerProces_::_Level::_Table::_inspectEmptyTables(database_name) ||
+                !_IronInnerProces_::_Level::_Table::_inspectExistTable(database_name, table_name))
+            {
+                ios::err64(kwl::error() + "table not exist: '" + table_name + "'");
+                return {};
+            }
+        }
+
+        // 去重, 合并表字段
+        std::vector<std::string> _fields{_IronInnerProces_::_Level::_Field::_obtainFieldNames(database_name, table_names[0])};
+        for (size_t i{1}; i < table_names.size(); ++i)
+        {
+            std::vector<std::string> result;
+            std::unordered_set<std::string> seen;
+
+            for (const auto &elem : _fields)
+            {
+                if (seen.insert(elem).second)
+                {
+                    result.push_back(elem);
+                }
+            }
+
+            for (const auto &elem : _IronInnerProces_::_Level::_Field::_obtainFieldNames(database_name, table_names[i]))
+            {
+                if (seen.insert(elem).second)
+                {
+                    result.push_back(elem);
+                }
+            }
+
+            _fields = result;
+        }
+
+        auto database_index{_IronInnerProces_::_Level::_Database::_obtainDatabaseIndex(database_name)};
+        std::vector<std::vector<std::string>> merged_table_data;
+
+        // 首先获取第一个表的数据作为基础
+        if (!table_names.empty())
+        {
+            auto first_table_index{_IronInnerProces_::_Level::_Table::_obtainTableIndex(database_name, table_names[0])};
+            const auto &first_table = IronObject::Interface::databases[database_index].tables[first_table_index];
+
+            // 构建第一个表的数据
+            for (const auto &row : first_table.values)
+            {
+                merged_table_data.push_back(Detail::createMappedRow(first_table, row, _fields));
+            }
+
+            // 处理剩余的表
+            for (size_t i{1}; i < table_names.size(); ++i)
+            {
+                auto current_table_index{_IronInnerProces_::_Level::_Table::_obtainTableIndex(database_name, table_names[i])};
+                const auto &current_table = IronObject::Interface::databases[database_index].tables[current_table_index];
+
+                // 查找公共字段
+                std::vector<std::string> common_fields = Detail::findCommonFields(current_table, _fields);
+
+                if (!common_fields.empty())
+                {
+                    // 有公共字段，使用连接方式
+                    Detail::mergeWithJoin(current_table, merged_table_data, _fields, common_fields);
+                }
+                else
+                {
+                    // 无公共字段，简单追加
+                    Detail::appendTableData(current_table, merged_table_data, _fields);
+                }
+            }
+        }
+
+        return std::make_tuple(merged_table_data, _fields);
     }
 } // namespace IronProces

@@ -386,4 +386,9 @@ namespace IronFormatOut
 
         std::cout << "(" << target_query_array.size() << " row" << (target_query_array.size() > 1 ? "s" : "") << ")" << std::endl;
     }
+
+    void Printer::printMultipleTableData(const std::string &database_name, const std::vector<std::string> &table_names)
+    {
+        ios::prt64("sorry, not implemented.");
+    }
 } // namespace IronFormatOut

@@ -575,6 +575,25 @@ namespace IronServer
             linkTableDatas(new_query);
         }
 
+        else if (lower_query.substr(0, 20) == "link show table from")
+        {
+            std::string database_name{IronStatus::Manage::getDatabaseName()};
+            if (database_name == IronKeywds::Kw::none_())
+            {
+                database_name = lower_query.substr(20);
+                IronHandle::Strings::strip(database_name);
+            }
+
+            if (database_name.empty())
+            {
+                ios::err64(keyw::error() + "database name is empty");
+                lgs::IRON_DEBUG("database name is empty");
+                return;
+            }
+            std::vector<std::string> table_names;
+            // 获取表名称暂时不实现
+            IronFormatOut::Printer::printMultipleTableData(database_name, table_names);
+        }
         else if (lower_query.substr(0, 5) == "set -")
         {
             settingsAdjust(lower_query);
