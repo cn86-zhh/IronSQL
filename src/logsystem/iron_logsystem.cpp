@@ -1,19 +1,21 @@
 #include "iron_logsystem.hpp"
 #include "iron_load_settings_conf.hpp"
+#include "iron_path_manage.hpp"
 
 namespace IronLogSystem
 {
     namespace load = IronLoadSettingsConf;
+    namespace path_manage = IronPathManage;
 
     static const std::string ENABLE_BASE_DEBUG{"ENABLE_BASE_DEBUG"};
     static const std::string ENABLE_DEBUG_HIGHLIGHT{"ENABLE_DEBUG_HIGHLIGHT"};
 
 #if defined(_WIN32) || defined(_WIN64) // windows
-    static bool enableDebug{load::Loader::loadSettingsConfFile("C:\\Users\\IronSQL\\.Config\\ironsql_settings.conf", ENABLE_BASE_DEBUG)};
-    static bool enableDebugHighlight{load::Loader::loadSettingsConfFile("C:\\Users\\IronSQL\\.Config\\ironsql_settings.conf", ENABLE_DEBUG_HIGHLIGHT)};
+    static bool enableDebug{load::Loader::loadSettingsConfFile(path_manage::Control::windowsSettingsConfigPath(), ENABLE_BASE_DEBUG)};
+    static bool enableDebugHighlight{load::Loader::loadSettingsConfFile(path_manage::Control::windowsSettingsConfigPath(), ENABLE_DEBUG_HIGHLIGHT)};
 #else // linux
-    static bool enableDebug{load::Loader::loadSettingsConfFile("/etc/ironsql/.config/ironsql_settings.conf", ENABLE_BASE_DEBUG)};
-    static bool enableDebugHighlight{load::Loader::loadSettingsConfFile("/etc/ironsql/.config/ironsql_settings.conf", ENABLE_DEBUG_HIGHLIGHT)};
+    static bool enableDebug{load::Loader::loadSettingsConfFile(path_manage::Control::linuxSettingsConfigPath(), ENABLE_BASE_DEBUG)};
+    static bool enableDebugHighlight{load::Loader::loadSettingsConfFile(path_manage::Control::linuxSettingsConfigPath(), ENABLE_DEBUG_HIGHLIGHT)};
 #endif
 
     /**

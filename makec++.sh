@@ -72,6 +72,7 @@ function StartCompileIronSQL()
     local header_stdiostreams="${SRC}/stdiostreams"
     local header_cross_platform="${SRC}/.include"
     local header_loads="${SRC}/loads"
+    local header_path_manage="${SRC}/.path"
     
     readonly binary_file
     readonly log_file
@@ -99,6 +100,9 @@ function StartCompileIronSQL()
         "${SRC}/logsystem/iron_logsystem.cpp"
         "${SRC}/stdiostreams/iron_stdost.cpp"
         "${SRC}/loads/iron_load_settings_conf.cpp"
+        "${SRC}/.path/iron_path_manage.cpp"
+        "${SRC}/.path/iron_path_windows.cpp"
+        "${SRC}/.path/iron_path_linux.cpp"
     )
     
     # Detect operating system
@@ -132,6 +136,7 @@ EOF
         -I "${header_stdiostreams}" \
         -I "${header_cross_platform}" \
         -I "${header_loads}" \
+        -I "${header_path_manage}" \
         "${cpp_file_array[@]}" "${SRC}/resource.o" -o "${binary_file}" 2>"${log_file}"
         then
             # Clean up resource files
@@ -157,6 +162,7 @@ EOF
         -I "${header_stdiostreams}" \
         -I "${header_cross_platform}" \
         -I "${header_loads}" \
+        -I "${header_path_manage}" \
         "${cpp_file_array[@]}" -o "${binary_file}" 2>"${log_file}"
         then
             CompileSuccessPrompt
