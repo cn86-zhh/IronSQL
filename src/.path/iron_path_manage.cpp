@@ -14,7 +14,7 @@ namespace IronPathManage
      */
     const auto Control::windowsSettingsConfigPath() -> std::filesystem::path
     {
-        return _wp::iron_settings_config;
+        return _wp::PathPool::get_iron_settings_config();
     }
 
     /**
@@ -24,6 +24,6 @@ namespace IronPathManage
      */
     const auto Control::linuxSettingsConfigPath() -> std::filesystem::path
     {
-        return _lp::iron_settings_config;
+        return _lp::PathPool::get_iron_settings_config();
     }
 }
