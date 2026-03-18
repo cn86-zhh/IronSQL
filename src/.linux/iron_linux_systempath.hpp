@@ -14,6 +14,10 @@
 #ifndef IRON_LINUX_SYSTEMPATH_HPP
 #define IRON_LINUX_SYSTEMPATH_HPP
 
+#include <iostream>
+#include <string>
+#include <filesystem>
+
 namespace IronLinuxSystemPath
 {
 
@@ -24,6 +28,7 @@ namespace IronLinuxSystemPath
         ~SystemPathManager() = delete;
 
     public:
+        static auto configForEtc() -> std::filesystem::path;
     }; // class SystemPathManager
 
 } // namespace IronLinuxSystemPath

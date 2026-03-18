@@ -63,9 +63,10 @@ IronSQL 不追求功能的大而全，而是专注于：
 │  ├─ 数据结构 (iron_struct)         │  ├─ Database, Table, Field
 │  └─ 全局对象 (iron_object)         │  └─ Interface: 全局容器
 ├─────────────────────────────────────────┤
-│      辅助系统层                      │  日志、IO、配置
+│      辅助系统层                      │  日志、IO、文件系统
 │  ├─ 日志系统 (logsystem)           │  ├─ LogOut: 调试日志
-│  ├─ IO 流 (stdiostreams)            │  └─ OutStream: 输入输出
+│  ├─ IO 流 (stdiostreams)            │  ├─ OutStream: 输入输出
+│  ├─ 文件系统 (.ironfsystem)        │  ├─ Fsys: 文件系统操作
 │  └─ 跨平台 (include/.include)       │  └─ 跨平台宏定义
 └─────────────────────────────────────────┘
 ```
@@ -141,6 +142,7 @@ using Value = std::variant<long long, long, int, char,
 - ✅ **格式化输出**：自动计算列宽，对齐美观
 - ✅ **类型自动识别**：自动转换用户输入为适当类型
 - ✅ **中文字符支持**：UTF-8 编码，正确显示中文
+- ✅ **文件系统操作**：跨平台文件系统操作支持
 
 ---
 
@@ -226,6 +228,7 @@ IronSQL/
 │  ├─ .config/                 # 配置文件
 │  ├─ .windows/                # Windows 平台代码
 │  ├─ .linux/                  # Linux 平台代码
+│  ├─ .ironfsystem/            # 文件系统操作
 │  ├─ .recode/                 # 变更记录
 │  └─ iron_main.cpp            # 程序入口
 ├─ bin/                         # 可执行文件
