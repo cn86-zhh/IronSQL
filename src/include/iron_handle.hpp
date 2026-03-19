@@ -22,6 +22,7 @@ namespace IronHandle
         static auto stringName(const std::string &str) -> std::vector<std::string>;
         static auto extractDatabaseAndTable(const std::string &str) -> std::vector<std::string>;
         static auto getDisplayWidth(const std::string &str) -> int;
+        static auto getTableNames(const std::string &lstrs) -> std::vector<std::string>;
     };
 
 } // namespace IronHandle

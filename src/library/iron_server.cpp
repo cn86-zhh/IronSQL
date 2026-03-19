@@ -212,6 +212,29 @@ namespace IronServer
     }
 
     /**
+     * @brief Shows the datas of multiple linked tables.
+     *
+     * This function shows the datas of multiple linked tables specified in the query.
+     * If the table names are not qualified with a database name, the current database is used.
+     *
+     * @param query The SQL select sentence to process.
+     */
+    static void linkShowMultipleTableDatas(const std::string &query)
+    {
+        static const char delimiter{':'};
+        auto deli_pos = query.find(delimiter);
+
+        std::string database_name{IronStatus::Manage::getDatabaseName()};
+        if (database_name == IronKeywds::Kw::none_() && deli_pos != std::string::npos)
+        {
+            database_name = query.substr(0, deli_pos);
+            IronHandle::Strings::strip(database_name);
+        }
+
+        IronFormatOut::Printer::printMultipleTableData(database_name, IronHandle::Strings::getTableNames(query.substr(deli_pos + 1)));
+    }
+
+    /**
      * @brief Processes a SELECT SQL statement.
      *
      * This function handles SELECT statements, extracting field names, table name, and database name
@@ -579,23 +602,11 @@ namespace IronServer
 
         else if (lower_query.substr(0, 20) == "link show table from")
         {
-            std::string database_name{IronStatus::Manage::getDatabaseName()};
-            if (database_name == IronKeywds::Kw::none_())
-            {
-                database_name = lower_query.substr(20);
-                IronHandle::Strings::strip(database_name);
-            }
-
-            if (database_name.empty())
-            {
-                ios::err64(keyw::error() + "database name is empty");
-                lgs::IRON_DEBUG("database name is empty");
-                return;
-            }
-            std::vector<std::string> table_names;
-            // 获取表名称暂时不实现
-            IronFormatOut::Printer::printMultipleTableData(database_name, table_names);
+            std::string sub_string{lower_query.substr(20)};
+            IronHandle::Strings::strip(sub_string);
+            linkShowMultipleTableDatas(sub_string);
         }
+
         else if (lower_query.substr(0, 5) == "set -")
         {
             settingsAdjust(lower_query);

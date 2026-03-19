@@ -122,6 +122,7 @@ using Value = std::variant<long long, long, int, char,
 - ✅ 显示表列表 (`SHOW TABLES`)
 - ✅ 显示表结构 (`SHOW TABLE ... STRUCT`)
 - ✅ 关联表 (`LINK TABLE ... TO ... NEW ...`) - 智能合并
+- ✅ 显示多个表的合并数据 (`LINK SHOW TABLE FROM ...`) - 快速查看
 
 #### 数据操作
 
@@ -139,10 +140,54 @@ using Value = std::variant<long long, long, int, char,
 #### 特色功能
 
 - ✅ **智能表关联**：基于共同字段自动合并表数据
+- ✅ **多表联合显示**：直接查看多个表的合并数据，无需创建新表
 - ✅ **格式化输出**：自动计算列宽，对齐美观
 - ✅ **类型自动识别**：自动转换用户输入为适当类型
 - ✅ **中文字符支持**：UTF-8 编码，正确显示中文
 - ✅ **文件系统操作**：跨平台文件系统操作支持
+
+---
+
+## 更新记录
+
+### 2026-03-19 - 多表联合显示功能
+
+#### 新增功能
+
+- **多表联合显示**：添加了 `LINK SHOW TABLE FROM` 语句，允许直接查看多个表的合并数据，无需创建新表
+- **语法格式**：`link show table from database:table1,table2,...`
+- **支持任意数量表**：可以同时查看两个或更多表的关联数据
+
+#### 技术改进
+
+- **修复字段宽度计算**：解决了 "field width and row width size not match" 错误
+- **优化数据合并**：基于公共字段智能合并表数据，无公共字段时自动追加
+- **提升性能**：无需创建临时表，节省内存，操作更高效
+
+#### 与旧语法比较
+
+| 特性         | 旧语法 (LINK TABLE ... TO ... NEW ...) | 新语法 (LINK SHOW TABLE FROM ...) |
+| ------------ | -------------------------------------- | --------------------------------- |
+| 操作步骤     | 多步（创建新表 + 查询新表）            | 一步（直接查看合并数据）          |
+| 内存占用     | 创建临时表，占用内存                   | 不创建临时表，节省内存            |
+| 语法复杂度   | 复杂，需要指定目标表名                 | 简单，直接指定多个表名            |
+| 支持的表数量 | 最多两个表                             | 任意数量表                        |
+| 结果持久化   | 结果存储在新表中                       | 结果仅显示，不持久化              |
+| 使用场景     | 需要保存关联结果时                     | 快速查看关联数据时                |
+
+#### 使用示例
+
+```sql
+-- 查看两个表的合并数据
+link show table from users:user_roles,user_profile;
+
+-- 查看三个表的合并数据
+link show table from users:user_roles,user_muxt,user_ooxx;
+```
+
+#### 实现详情
+
+详细实现记录请查看 `.recode` 目录中的 `recode-linkShowTable重大实现-2026-03-19-12-00.log` 文件。
 
 ---
 
@@ -218,23 +263,31 @@ echo "create database test; use test; create table t (id int); insert into t (id
 
 ```
 IronSQL/
-├─ src/                          # 源代码目录
+├─ src/                         # 源代码目录
 │  ├─ kernel/                   # 核心处理层
 │  ├─ library/                  # 功能库层
 │  ├─ release/                  # 数据模型层
 │  ├─ include/                  # 公共头文件
-│  ├─ logsystem/               # 日志系统
-│  ├─ stdiostreams/            # IO 流处理
-│  ├─ .config/                 # 配置文件
-│  ├─ .windows/                # Windows 平台代码
-│  ├─ .linux/                  # Linux 平台代码
-│  ├─ .ironfsystem/            # 文件系统操作
-│  ├─ .recode/                 # 变更记录
-│  └─ iron_main.cpp            # 程序入口
+│  ├─ logsystem/                # 日志系统
+│  ├─ stdiostreams/             # IO 流处理
+│  ├─ loads/                    # 配置加载
+│  ├─ .config/                  # 配置文件
+│  ├─ .include/                 # 跨平台包含
+│  ├─ .package/                 # 包管理
+│  ├─ .path/                    # 路径管理
+│  ├─ .ironfsystem/             # 文件系统操作
+│  ├─ .windows/                 # Windows 平台代码
+│  ├─ .linux/                   # Linux 平台代码
+│  ├─ .recode/                  # 变更记录
+│  ├─ network/                  # 网络功能
+│  ├─ test/                     # 测试代码
+│  ├─ writes/                   # 写入操作
+│  ├─ iron_main.cpp             # 程序入口
+│  └─ resource.rc.in            # 资源文件
 ├─ bin/                         # 可执行文件
 ├─ log/                         # 编译日志
 ├─ img/                         # 图标资源
-├─ CODE-RULES.MD               # 代码规范
+├─ CODE-RULES.MD                # 代码规范
 ├─ LICENSE                      # MIT 许可证
 └─ README.MD                    # 本文件
 ```

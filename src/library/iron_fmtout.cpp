@@ -389,6 +389,51 @@ namespace IronFormatOut
 
     void Printer::printMultipleTableData(const std::string &database_name, const std::vector<std::string> &table_names)
     {
-        ios::prt64("sorry, not implemented.");
+        auto [link_table_datas, link_table_fields]{IronProces::Gets::linkShowTable(database_name, table_names)};
+
+        auto field_widths = IronProces::Gets::linkShowTableMaximumWidthPerColumnField();
+        auto row_widths = IronProces::Gets::linkShowTableMaximumWidthPerColumnData();
+        std::vector<int> last_row_widths;
+
+        if (field_widths.size() != row_widths.size())
+        {
+            ios::err64(IronKeywds::Level::error() + "field width and row width size not match.");
+            log::IRON_DEBUG("field width and row width size not match.");
+            return;
+        }
+
+        for (int size_inx{0}; size_inx < field_widths.size(); size_inx++)
+        {
+            last_row_widths.push_back(std::max(field_widths[size_inx], row_widths[size_inx]));
+        }
+
+        if (last_row_widths.size() != link_table_fields.size())
+        {
+            ios::err64(IronKeywds::Level::error() + "last row width size not match.");
+            log::IRON_DEBUG("last row width size not match.");
+            return;
+        }
+
+        // out put file names
+        _IronInnerFormatOut_::_Fmt::_printLineNew(last_row_widths); //  x
+        std::cout << '|';
+        for (int idx{0}; idx < link_table_fields.size(); idx++)
+        {
+            std::cout << std::left << std::setw(last_row_widths.at(idx)) << link_table_fields.at(idx) << '|';
+        }
+        std::cout << std::endl;
+        _IronInnerFormatOut_::_Fmt::_printLineNew(last_row_widths); //  x
+
+        // out put data rows
+        for (int inx{0}; inx < link_table_datas.size(); inx++)
+        {
+            std::cout << '|';
+            for (int j{0}; j < link_table_datas.at(inx).size(); j++)
+            {
+                std::cout << std::left << std::setw(last_row_widths.at(j)) << link_table_datas.at(inx).at(j) << '|';
+            }
+            std::cout << std::endl;
+        }
+        _IronInnerFormatOut_::_Fmt::_printLineNew(last_row_widths);
     }
 } // namespace IronFormatOut

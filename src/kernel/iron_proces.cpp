@@ -125,6 +125,7 @@ namespace _IronInnerProces_
             static auto _obtainFieldIndex(const std::string &database_name, const std::string &table_name,
                                           const std::string &field_name) -> int;
         }; // private class _Field
+
         class _Data
         {
         private:
@@ -138,6 +139,22 @@ namespace _IronInnerProces_
                                                  const std::vector<int> &field_value_widths);
             static auto _obtainDataRowWidth(const std::string &database_name, const std::string &table_name) -> std::vector<int>;
         }; // private class _Data
+
+        class _Link
+        {
+        private:
+            _Link() = delete;
+            ~_Link() = delete;
+
+        public:
+            static std::mutex linkmtx;
+            static std::vector<int> fields_column_max;
+            static std::vector<int> datas_column_max;
+
+            static auto addInt(const int &val, std::vector<int> &tar_array) -> void;
+            static auto getTarIntArray(const std::vector<int> &tar_array) -> std::vector<int>;
+        }; // private class _Link
+
     }; // private class _Level
 
     /***********************************************************
@@ -152,6 +169,10 @@ namespace _IronInnerProces_
     std::unordered_map<std::string, _TbMap> _Level::_Table::tables_map;
     std::unordered_map<std::string, _FdMap> _Level::_Field::fields_map;
     std::unordered_map<std::string, std::unordered_map<std::string, std::vector<int>>> _Level::_Data::data_map;
+
+    std::mutex _Level::_Link::linkmtx;
+    std::vector<int> _Level::_Link::fields_column_max;
+    std::vector<int> _Level::_Link::datas_column_max;
 
     /**
      * @brief Records the database index to the map.
@@ -506,6 +527,27 @@ namespace _IronInnerProces_
             log::IRON_DEBUG("delete table failed: " + table_name);
             return;
         }
+    }
+
+    /**
+     * @brief Adds an integer to the vector.
+     *
+     * @param val The integer to add.
+     */
+    void _Level::_Link::addInt(const int &val, std::vector<int> &tar_array)
+    {
+        std::lock_guard<std::mutex> lock(linkmtx);
+        tar_array.push_back(val);
+    }
+
+    /**
+     * @brief Obtains the vector of integers.
+     *
+     * @return A vector of integers.
+     */
+    auto _Level::_Link::getTarIntArray(const std::vector<int> &tar_array) -> std::vector<int>
+    {
+        return tar_array;
     }
 
 } // namespace _IronInnerProces_
@@ -1556,6 +1598,9 @@ namespace IronProces
             }
         }
 
+        _IronInnerProces_::_Level::_Link::fields_column_max.clear();
+        _IronInnerProces_::_Level::_Link::datas_column_max.clear();
+
         // 去重, 合并表字段
         std::vector<std::string> _fields{_IronInnerProces_::_Level::_Field::_obtainFieldNames(database_name, table_names[0])};
         for (size_t i{1}; i < table_names.size(); ++i)
@@ -1581,6 +1626,16 @@ namespace IronProces
 
             _fields = result;
         }
+
+        // 初始化字段宽度向量 - update: 2026-03-19
+        _IronInnerProces_::_Level::_Link::fields_column_max.resize(_fields.size(), 0);
+        for (size_t i = 0; i < _fields.size(); ++i)
+        {
+            _IronInnerProces_::_Level::_Link::fields_column_max[i] = _fields[i].size();
+        }
+
+        // 初始化数据宽度向量 - update: 2026-03-19
+        _IronInnerProces_::_Level::_Link::datas_column_max.resize(_fields.size(), 0);
 
         auto database_index{_IronInnerProces_::_Level::_Database::_obtainDatabaseIndex(database_name)};
         std::vector<std::vector<std::string>> merged_table_data;
@@ -1619,6 +1674,43 @@ namespace IronProces
             }
         }
 
+        for (auto &row : merged_table_data)
+        {
+            if (row.empty())
+            {
+                continue;
+            }
+            // 计算每个字段的最大宽度 - update: 2026-03-19
+            for (size_t i = 0; i < row.size() && i < _IronInnerProces_::_Level::_Link::datas_column_max.size(); ++i)
+            {
+                int current_width = row[i].size();
+                if (current_width > _IronInnerProces_::_Level::_Link::datas_column_max[i])
+                {
+                    _IronInnerProces_::_Level::_Link::datas_column_max[i] = current_width;
+                }
+            }
+        }
+
         return std::make_tuple(merged_table_data, _fields);
+    }
+
+    /**
+     * @brief Obtains the maximum column widths for data.
+     *
+     * @return A vector of integers representing the maximum column widths for data.
+     */
+    auto Gets::linkShowTableMaximumWidthPerColumnData() -> std::vector<int>
+    {
+        return _IronInnerProces_::_Level::_Link::getTarIntArray(_IronInnerProces_::_Level::_Link::datas_column_max);
+    }
+
+    /**
+     * @brief Obtains the maximum column widths for fields.
+     *
+     * @return A vector of integers representing the maximum column widths for fields.
+     */
+    auto Gets::linkShowTableMaximumWidthPerColumnField() -> std::vector<int>
+    {
+        return _IronInnerProces_::_Level::_Link::getTarIntArray(_IronInnerProces_::_Level::_Link::fields_column_max);
     }
 } // namespace IronProces

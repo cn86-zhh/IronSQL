@@ -235,7 +235,7 @@ namespace IronHandle
      * @brief Extracts database and table name from a string.
      * If the string contains a dot, it is assumed to be in the format "database.table".
      * Otherwise, it is assumed to be just a table name.
-     * 
+     *
      * @param str The string to extract from.
      * @return A vector of strings. If size() == 1, it contains just the table name.
      *         If size() == 2, it contains [database_name, table_name].
@@ -268,9 +268,9 @@ namespace IronHandle
 
     /**
      * @brief 计算字符串的显示宽度
-     * 
+     *
      * 对于ASCII字符，宽度为1；对于中文字符，宽度也为1
-     * 
+     *
      * @param str 要计算宽度的字符串
      * @return 字符串的显示宽度
      */
@@ -284,17 +284,20 @@ namespace IronHandle
                 // ASCII字符
                 width++;
                 i++;
-            } else if (static_cast<unsigned char>(str[i]) >= 0xE0)
+            }
+            else if (static_cast<unsigned char>(str[i]) >= 0xE0)
             {
                 // 3字节UTF-8字符（中文字符）
                 width++;
                 i += 3;
-            } else if (static_cast<unsigned char>(str[i]) >= 0xC0)
+            }
+            else if (static_cast<unsigned char>(str[i]) >= 0xC0)
             {
                 // 2字节UTF-8字符
                 width++;
                 i += 2;
-            } else
+            }
+            else
             {
                 // 其他情况
                 width++;
@@ -302,5 +305,39 @@ namespace IronHandle
             }
         }
         return width;
+    }
+
+    /**
+     * @brief 从字符串中提取表名
+     *
+     * @param lstrs 包含表名的字符串
+     * @return 包含所有表名的向量
+     */
+    auto Strings::getTableNames(const std::string &lstrs) -> std::vector<std::string>
+    {
+        /* expected line: table1,table2,... */
+        std::vector<std::string> table_names;
+
+        std::string table_name;
+        for (auto c : lstrs)
+        {
+            if (c == ',')
+            {
+                table_names.push_back(table_name);
+                table_name.clear();
+            }
+            else
+            {
+                table_name += c;
+            }
+        }
+
+        if (!table_name.empty())
+        {
+            table_names.push_back(table_name);
+            table_name.clear();
+        }
+
+        return table_names;
     }
 }

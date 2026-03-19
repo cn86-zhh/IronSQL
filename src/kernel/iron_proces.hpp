@@ -45,7 +45,8 @@ namespace IronProces
             -> std::vector<std::vector<std::string>>;
         static auto linkShowTable(const std::string &database_name, const std::vector<std::string> &table_names)
             -> std::tuple<std::vector<std::vector<std::string>>, std::vector<std::string>>;
-
+        static auto linkShowTableMaximumWidthPerColumnData() -> std::vector<int>;
+        static auto linkShowTableMaximumWidthPerColumnField() -> std::vector<int>;
     }; // class Gets
 
     class Core
