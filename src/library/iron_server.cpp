@@ -294,34 +294,36 @@ namespace IronServer
      * This function handles various help commands and displays the appropriate help information.
      *
      * @param help_cmd The help command to process.
+     * @param enableHighlight Whether to enable syntax highlighting.
+     * @default true
      * @param ref_result Reference to a boolean that will be set to false if the command is unrecognized.
      */
-    static void ironSQLHelp(const std::string &help_cmd, bool &ref_result)
+    static void ironSQLHelp(const std::string &help_cmd, bool &ref_result, const bool &enableHighlight)
     {
         if (help_cmd == "help -p")
         {
-            IronHelp::ShowHelpInformation::showProjectProgress(IronKeywds::Kw::enable_());
+            IronHelp::ShowHelpInformation::showProjectProgress(enableHighlight);
         }
 
         else if (help_cmd == "help -s")
         {
-            IronHelp::ShowHelpInformation::showHelpGuide(IronKeywds::Kw::enable_());
+            IronHelp::ShowHelpInformation::showHelpGuide(enableHighlight);
         }
         else if (help_cmd == "help -database")
         {
-            IronHelp::ShowHelpInformation::showIronSQLSyntaxInformation(IronKeywds::Kw::enable_(), "database");
+            IronHelp::ShowHelpInformation::showIronSQLSyntaxInformation(enableHighlight, "database");
         }
         else if (help_cmd == "help -table")
         {
-            IronHelp::ShowHelpInformation::showIronSQLSyntaxInformation(IronKeywds::Kw::enable_(), "table");
+            IronHelp::ShowHelpInformation::showIronSQLSyntaxInformation(enableHighlight, "table");
         }
         else if (help_cmd == "help -data")
         {
-            IronHelp::ShowHelpInformation::showIronSQLSyntaxInformation(IronKeywds::Kw::enable_(), "data");
+            IronHelp::ShowHelpInformation::showIronSQLSyntaxInformation(enableHighlight, "data");
         }
         else if (help_cmd == "help -syntax --all")
         {
-            IronHelp::ShowHelpInformation::showIronSQLSyntaxInformation(IronKeywds::Kw::enable_());
+            IronHelp::ShowHelpInformation::showIronSQLSyntaxInformation(enableHighlight);
         }
         else
         {
@@ -337,7 +339,7 @@ namespace IronServer
      *
      * @param query The SQL query to process.
      */
-    void Service::runIronSQL(const std::string &query)
+    void Service::runIronSQL(const std::string &query, const bool &enableHighlight)
     {
         bool help_result = true;
 
@@ -536,7 +538,7 @@ namespace IronServer
 
         else if (lower_query.substr(0, 4) == "help")
         {
-            ironSQLHelp(lower_query, help_result);
+            ironSQLHelp(lower_query, help_result, enableHighlight);
         }
 
         else if (lower_query.substr(0, 13) == "drop database")

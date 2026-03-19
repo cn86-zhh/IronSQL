@@ -16,6 +16,9 @@
 #include "iron_test.hpp"
 #include "iron_keywds.hpp"
 #include "iron_logsystem.hpp"
+#include "iron_path_manage.hpp"
+#include "iron_path_init.hpp"
+#include "iron_load_settings_conf.hpp"
 
 namespace IronMain
 {
@@ -26,6 +29,18 @@ namespace IronMain
      ************************************************************/
 
     using log = IronLogSystem::LogOut;
+    namespace path_manage = IronPathManage;
+
+    static const std::string enableHighlight{"ENABLE_HIGHLIGHT"};
+
+// load settings from file
+#if defined(_WIN32) || defined(_WIN64)
+    auto settings_path{path_manage::Control::windowsSettingsConfigPath() / "ironsql_settings.conf"};
+    static bool _ENABLE_HIGHLIGHT{IronLoadSettingsConf::Loader::loadSettingsConfFile(settings_path, enableHighlight)};
+#else
+    auto settings_path{path_manage::Control::linuxSettingsConfigPath() / "ironsql_settings.conf"};
+    static bool _ENABLE_HIGHLIGHT{IronLoadSettingsConf::Loader::loadSettingsConfFile(settings_path, enableHighlight)};
+#endif
 
     class Master
     {
@@ -46,14 +61,17 @@ namespace IronMain
      */
     void Master::initIronSQL()
     {
-        // set terminal encoding to UTF-8
-#ifdef _WIN32
+
+        bool isInteractive = false;
+
+// set terminal encoding to UTF-8
+#if defined(_WIN32) || defined(_WIN64)
         SetConsoleOutputCP(65001); // set console output encoding to UTF-8
         SetConsoleCP(65001);       // set console input encoding to UTF-8
 #endif
 
-        bool isInteractive = false;
-#ifdef _WIN32
+//  set terminal to interactive mode if it is a console
+#if defined(_WIN32) || defined(_WIN64)
         isInteractive = _isatty(_fileno(stdin));
 #else
         isInteractive = isatty(fileno(stdin));
@@ -61,7 +79,7 @@ namespace IronMain
 
         if (isInteractive)
         {
-            IronHelp::ShowHelpInformation::welcome(IronKeywds::Kw::enable_());
+            IronHelp::ShowHelpInformation::welcome();
         }
 
         std::string buffer; // used to accumulate multi-line statements
@@ -124,7 +142,7 @@ namespace IronMain
                 if (!sentence.empty())
                 {
                     log::IRON_DEBUG(sentence);
-                    IronServer::Service::runIronSQL(sentence);
+                    IronServer::Service::runIronSQL(sentence, _ENABLE_HIGHLIGHT);
                 }
 
                 buffer = buffer.substr(pos + 1);
@@ -136,6 +154,13 @@ namespace IronMain
 
 int main(int argc, char *argv[])
 {
+
+#if defined(_WIN32) || defined(_WIN64) // windows
+    IronPathInit::Initer::initPath(IronPathManage::Control::windowsSettingsConfigPath());
+#else
+    IronPathInit::Initer::initPath(IronPathManage::Control::linuxSettingsConfigPath());
+#endif
+
     IronTest::test();
     IronMain::Master::initIronSQL();
     return 0;

@@ -15,7 +15,7 @@ namespace IronServer
         ~Service() = delete;
 
     public:
-        static void runIronSQL(const std::string &query);
+        static void runIronSQL(const std::string &query, const bool &enableHighlight = true);
     }; // class Service
 } // namespace IronServer
 

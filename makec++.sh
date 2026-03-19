@@ -103,6 +103,7 @@ function StartCompileIronSQL()
         "${SRC}/.path/iron_path_manage.cpp"
         "${SRC}/.path/iron_path_windows.cpp"
         "${SRC}/.path/iron_path_linux.cpp"
+        "${SRC}/.path/iron_path_init.cpp"
     )
     
     # Detect operating system
@@ -173,6 +174,10 @@ EOF
     
     # shellcheck disable=SC2181
     if [[ ${?} -eq 0 ]]; then
+        if ! rm -rf "${BIN}/.config"; then
+            echo -e "${R}Error: cannot remove config file from binary directory${E}"
+        fi
+        
         if ! /bin/cp -rpf "${SRC}/.config" "${BIN}/.config"; then
             echo -e "${R}Error: cannot copy config file to binary directory${E}"
         else

@@ -47,6 +47,7 @@ set(SOURCE_FILES
     ${CMAKE_SOURCE_DIR}/src/.path/iron_path_windows.cpp
     ${CMAKE_SOURCE_DIR}/src/.path/iron_path_linux.cpp
     ${CMAKE_SOURCE_DIR}/src/.ironfsystem/iron_file_system.cpp
+    ${CMAKE_SOURCE_DIR}/src/.path/iron_path_init.cpp
 )
 
 # 可执行文件

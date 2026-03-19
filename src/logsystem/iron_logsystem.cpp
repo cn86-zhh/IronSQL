@@ -10,12 +10,15 @@ namespace IronLogSystem
     static const std::string ENABLE_BASE_DEBUG{"ENABLE_BASE_DEBUG"};
     static const std::string ENABLE_DEBUG_HIGHLIGHT{"ENABLE_DEBUG_HIGHLIGHT"};
 
+// load settings from file
 #if defined(_WIN32) || defined(_WIN64) // windows
-    static bool enableDebug{load::Loader::loadSettingsConfFile(path_manage::Control::windowsSettingsConfigPath(), ENABLE_BASE_DEBUG)};
-    static bool enableDebugHighlight{load::Loader::loadSettingsConfFile(path_manage::Control::windowsSettingsConfigPath(), ENABLE_DEBUG_HIGHLIGHT)};
+    auto settings_path{path_manage::Control::windowsSettingsConfigPath() / "ironsql_settings.conf"};
+    static bool enableDebug{load::Loader::loadSettingsConfFile(settings_path, ENABLE_BASE_DEBUG)};
+    static bool enableDebugHighlight{load::Loader::loadSettingsConfFile(settings_path, ENABLE_DEBUG_HIGHLIGHT)};
 #else // linux
-    static bool enableDebug{load::Loader::loadSettingsConfFile(path_manage::Control::linuxSettingsConfigPath(), ENABLE_BASE_DEBUG)};
-    static bool enableDebugHighlight{load::Loader::loadSettingsConfFile(path_manage::Control::linuxSettingsConfigPath(), ENABLE_DEBUG_HIGHLIGHT)};
+    auto settings_path{path_manage::Control::linuxSettingsConfigPath() / "ironsql_settings.conf"};
+    static bool enableDebug{load::Loader::loadSettingsConfFile(settings_path, ENABLE_BASE_DEBUG)};
+    static bool enableDebugHighlight{load::Loader::loadSettingsConfFile(settings_path, ENABLE_DEBUG_HIGHLIGHT)};
 #endif
 
     /**

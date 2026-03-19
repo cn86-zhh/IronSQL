@@ -9,7 +9,7 @@ namespace IronPathManage
 
     /**
      * @brief Get windows settings config path.
-     * @brief PATH: "C:\\Users\\IronSQL\\.Config\\ironsql_settings.conf"
+     * @brief PATH: "C:\\Users\\IronSQL\\.Config"
      * @return Windows settings config path.
      */
     const auto Control::windowsSettingsConfigPath() -> std::filesystem::path
@@ -19,7 +19,7 @@ namespace IronPathManage
 
     /**
      * @brief Get linux settings config path.
-     * @brief PATH: "/etc/ironsql/.config/ironsql_settings.conf"
+     * @brief PATH: "/etc/ironsql/.config"
      * @return Linux settings config path.
      */
     const auto Control::linuxSettingsConfigPath() -> std::filesystem::path
