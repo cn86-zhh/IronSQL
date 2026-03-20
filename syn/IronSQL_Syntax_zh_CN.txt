@@ -1,0 +1,73 @@
+[*] IronSQL 数据库语法详情文档
+[*] 时间: 2026 年 03 月 20 日 晚上 10:37
+[*] 作者: 张恒
+[*] 职业: 极客
+
+[*] 显示语法
+
+[-] show databases;
+    |
+    |__ 显示所有的数据库对象.
+
+[-] show tables;
+    |
+    |__ 显示当前数据库内部的所有表对象.
+
+[-] show datas <table_name>;
+    |
+    |__ 从指定数据库内部选择指定的表显示表数据.
+
+[-] show struct <table_name>;
+    |
+    |__ 从指定的数据库内部选择指定的表显示表数据结构.
+
+[-] select * from <table_name>;
+    |
+    |__ 从指定的数据库内部选择指定的表显示表数据.
+    |__ '*' 匹配所有的表数据.
+    |__ 例如: select id,name,sex from user_info;
+    |__ 解释: 在当前数据库内部,选择指定的表列名称显示表数据.
+
+[*] 选择显示语法(绝对查询)
+
+[-] select * from <database_name.table_name>;
+    |
+    |__ 选择指定的数据库显示指定的表数据.
+    |__ '*' 匹配所有的表数据.
+    |__ 例如: select id,name,sex from users.user_info;
+    |__ 解释: 从指定的数据库选择指定的表列名称显示表数据.
+
+[-] show table struct from <database_name.table_name>;
+    |
+    |__ 选择指定的数据库选择指定的表显示指定的表数据结构.
+    |__ 例如: show table struct from users.user_info;
+
+[*] 联合语句(绝对语法,相对语法)
+
+[-] link table from <table1> to <table2> new <table3>;
+    |
+    |__ 相对语法: 合并表数据并且生成一张新表.
+    |__ 详情解释: 目标合并对象只接受两张表, 合并的新表必须不存在否则将合并失败.
+
+[-] link table from <database1.table1> to <database1.table2> new <table3>;
+    |
+    |__ 绝对语法: 合并表数据并且生成一张新表.
+    |__ 详情解释: 目标合并对象只接受两张表, 合并的新表必须不存在否则将合并失败.
+
+[-] link show table from <table1>,<table2>,...;
+    |
+    |__ 相对语法: 联合显示表数据,不会创建新表.
+    |__ 详情解释: use <database_name>; 之后才能联合显示表数据,如果表不存在将无法显示表数据.
+
+[-] link show table from <database_name>:<table1>,<table2>,...;
+    |
+    |__ 绝对语法: 联合显示表数据,不会创建新表.
+    |__ 详情解释: 不需要先使用数据库对象,就能联合显示目标数据库的内部的多个表数据.
+
+[-] link show table struct <table1>,<table2>,...;
+    |
+    |__ 相对语法: 联合显示表数据的数据结构。
+
+[-] link show table struct <database_name>:<table1>,<table2>,...;
+    |
+    |__ 绝对语法: 指定目标数据库,联合显示目标表的表数据库.

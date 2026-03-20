@@ -83,8 +83,8 @@ namespace IronHelp
         static const std::string LINE_08{"exit       * ............"};
         static const std::string LINE_09{"#, //, --  * comment line"};
         static const std::string LINE_10{"Official website: https://www.ironsql.org.com"};
-        static const std::string LINE_11{"Github project: https://github.com/cn86-zhh/IronSQL"};
-        static const std::string LINE_12{"Gitee project: https://gitee.com/ch86-zhh/IronSQL"};
+        static const std::string LINE_11{"Github   project: https://github.com/cn86-zhh/IronSQL"};
+        static const std::string LINE_12{"Gitee    project: https://gitee.com/ch86-zhh/IronSQL"};
 
         if (enable_highlight)
         {
@@ -114,6 +114,7 @@ namespace IronHelp
             std::cout << LINE_09 << std::endl;
             std::cout << LINE_10 << std::endl;
             std::cout << LINE_11 << std::endl;
+            std::cout << LINE_12 << std::endl;
         }
     }
 
@@ -345,26 +346,26 @@ namespace IronHelp
         static const std::string SPACE_LINE{""};
 
         static const std::string LINE_01{"WELCOME TO USE IRONSQL SYNTAX INFORMATION:"};
-        static const std::string LINE_02{"LEVEL FOR DATABASE:"};
+        static const std::string LINE_02{"[ LEVEL FOR DATABASE ]:"};
         static const std::string LINE_03{"show databases                                                        - show all databases"};
         static const std::string LINE_04{"drop database <database_name>                                         - drop a database"};
         static const std::string LINE_05{"use <database_name>                                                   - use a database"};
-        static const std::string LINE_06{"LEVEL FOR TABLE:"};
+        static const std::string LINE_06{"[ LEVEL FOR TABLE ]:"};
         static const std::string LINE_07{"show table <table_name>                                               - show all tables"};
         static const std::string LINE_08{"drop table <table_name>                                               - drop a table"};
         static const std::string LINE_09{"show struct <table_name>                                              - show table structure"};
         static const std::string LINE_X1{"show struct from <table_name>                                         - ......"};
         static const std::string LINE_X2{"show struct from <database.table_name>                                - ......"};
-        static const std::string LINE_10{"LEVEL FOR DATA:"};
+        static const std::string LINE_10{"[ LEVEL FOR DATA ]:"};
         static const std::string LINE_11{"select (*, fileds) from (database_name.table_name)                    - show select datas"};
         static const std::string LINE_12{"select (*, fileds) from (table_name)                                  - ......"};
         static const std::string LINE_13{"show datas"};
-        static const std::string LINE_14{"LEVEL FOR LINK SENTENCES:"};
+        static const std::string LINE_14{"[ LEVEL FOR LINK SENTENCES ]:"};
         static const std::string LINE_15{"link table from <table1> to <table2> new <new_table>"};
         static const std::string LINE_16{"link table from <database1.table1> to <database1.table2> new <new_table>"};
-        static const std::string LINE_17{"LEVEL FOR INSERT DATA:"};
+        static const std::string LINE_X3{"link show table from <database:table_name1, table_name2 ....>         - show link table"};
+        static const std::string LINE_17{"[ LEVEL FOR INSERT DATA ]:"};
         static const std::string LINE_18{"insert into (table_name) values (value1, value2, ...);                - insert data to table"};
-        static const std::string LINE_19{"link show table from <database:table_name1, table_name2 ....>         - show link table"};
 
         if (enable_highlight)
         {
@@ -390,10 +391,10 @@ namespace IronHelp
             Color::Ht::_printHighlightString(getRandomColor(), LINE_14);
             Color::Ht::_printHighlightString(getRandomColor(), LINE_15);
             Color::Ht::_printHighlightString(getRandomColor(), LINE_16);
+            Color::Ht::_printHighlightString(getRandomColor(), LINE_X3);
             std::cout << SPACE_LINE << std::endl;
             Color::Ht::_printHighlightString(getRandomColor(), LINE_17);
             Color::Ht::_printHighlightString(getRandomColor(), LINE_18);
-            Color::Ht::_printHighlightString(getRandomColor(), LINE_19);
         }
         else
         {
@@ -419,10 +420,10 @@ namespace IronHelp
             std::cout << LINE_14 << std::endl;
             std::cout << LINE_15 << std::endl;
             std::cout << LINE_16 << std::endl;
+            std::cout << LINE_X3 << std::endl;
             std::cout << SPACE_LINE << std::endl;
             std::cout << LINE_17 << std::endl;
             std::cout << LINE_18 << std::endl;
-            std::cout << LINE_19 << std::endl;
         }
     }
 } // namespace IronHelp

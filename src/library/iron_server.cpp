@@ -443,7 +443,7 @@ namespace IronServer
             showTargetTableDatas(table_name);
         }
 
-        else if (lower_query.substr(0, 11) == "select * from")
+        else if (lower_query.substr(0, 11) == "select*from")
         {
             std::string table_name{lower_query.substr(11)};
             IronHandle::Strings::strip(table_name);
