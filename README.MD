@@ -271,6 +271,7 @@ IronSQL/
 │  ├─ logsystem/                # 日志系统
 │  ├─ stdiostreams/             # IO 流处理
 │  ├─ loads/                    # 配置加载
+│  ├─ other/                    # 其他功能
 │  ├─ .config/                  # 配置文件
 │  ├─ .include/                 # 跨平台包含
 │  ├─ .package/                 # 包管理
@@ -284,7 +285,9 @@ IronSQL/
 │  ├─ writes/                   # 写入操作
 │  ├─ iron_main.cpp             # 程序入口
 │  └─ resource.rc.in            # 资源文件
+├─ syn/                         # 语法标准文档
 ├─ bin/                         # 可执行文件
+├─ test/                        # 测试脚本
 ├─ log/                         # 编译日志
 ├─ img/                         # 图标资源
 ├─ CODE-RULES.MD                # 代码规范
@@ -295,6 +298,22 @@ IronSQL/
 ---
 
 ## 开发指南
+
+### 语法标准
+
+IronSQL 提供了详细的语法标准文档，位于 `syn/` 目录中：
+
+- **IronSQL_Syntax_Readme.md**：语法标准说明文档
+- **IronSQL_Syntax_zh_CN.txt**：中文语法标准文档
+
+使用方法：
+
+```bash
+# 查看完整语法说明
+IronSQL> help -syntax --all;
+```
+
+注意：由于项目由单人维护开发，进度较为缓慢，实际程序语法可能与标准文档存在差异。开发者承诺以标准语法文档为准，逐步完善程序实现。
 
 ### 代码规范
 
