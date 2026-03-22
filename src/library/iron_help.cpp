@@ -1,3 +1,4 @@
+#include "iron_path_manage.hpp"
 #include "iron_help.hpp"
 #include <random>
 #include <vector>
@@ -40,6 +41,19 @@ namespace IronHelpColor
 namespace IronHelp
 {
     namespace Color = IronHelpColor;
+    static bool enableHelpHighlight{false};
+
+    /**
+     * @brief Sets the highlight status for help messages.
+     *
+     * This function sets the highlight status for help messages.
+     *
+     * @param enable_highlight Whether to enable color highlighting.
+     */
+    void ShowHelpInformation::setHighlight(const bool &enable_highlight)
+    {
+        enableHelpHighlight = enable_highlight;
+    }
 
     static const std::vector<std::string> COLORS = {Color::R, Color::G, Color::Y, Color::B, Color::M, Color::C, Color::W};
 
@@ -347,7 +361,7 @@ namespace IronHelp
 
         static const std::string LINE_01{"WELCOME TO USE IRONSQL SYNTAX INFORMATION:"};
         static const std::string LINE_02{"[ LEVEL FOR DATABASE ]:"};
-        static const std::string LINE_03{"show databases                                                        - show all databases"};
+        static const std::string LINE_03{"show databases;"};
         static const std::string LINE_04{"drop database <database_name>                                         - drop a database"};
         static const std::string LINE_05{"use <database_name>                                                   - use a database"};
         static const std::string LINE_06{"[ LEVEL FOR TABLE ]:"};
@@ -365,7 +379,7 @@ namespace IronHelp
         static const std::string LINE_16{"link table from <database1.table1> to <database1.table2> new <new_table>"};
         static const std::string LINE_X3{"link show table from <database:table_name1, table_name2 ....>         - show link table"};
         static const std::string LINE_17{"[ LEVEL FOR INSERT DATA ]:"};
-        static const std::string LINE_18{"insert into (table_name) values (value1, value2, ...);                - insert data to table"};
+        static const std::string LINE_18{"insert into table_name (field1, field2, ...) values (value1, value2, ...); - insert data to table"};
 
         if (enable_highlight)
         {
@@ -426,4 +440,66 @@ namespace IronHelp
             std::cout << LINE_18 << std::endl;
         }
     }
+
+    void ShowHelpInformation::showIronSQLSyntaxInformationDetails(const std::string &lang, const bool &enable_highlight)
+    {
+        static const std::string ZH_CN = "zh_cn";
+        std::filesystem::path sure_help_file;
+
+        // default output is english
+#if defined(_WIN32) || defined(_WIN64) // windows
+        std::filesystem::path help_file{IronPathManage::Control::windowsSettingsConfigPath() / "Ironsql_syntax_help_en_US.txt"};
+#else
+        std::filesystem::path help_file{IronPathManage::Control::linuxSettingsConfigPath() / "Ironsql_syntax_help_en_US.txt"};
+#endif
+
+        if (lang == ZH_CN)
+        {
+#if defined(_WIN32) || defined(_WIN64) // windows
+            std::filesystem::path help_file{IronPathManage::Control::windowsSettingsConfigPath() / "Ironsql_syntax_help_zh_CN.txt"};
+            sure_help_file = help_file;
+#else
+            std::filesystem::path help_file{IronPathManage::Control::linuxSettingsConfigPath() / "Ironsql_syntax_help_zh_CN.txt"};
+            sure_help_file = help_file;
+#endif
+        }
+        else
+        {
+            sure_help_file = help_file;
+        }
+
+        if (!std::filesystem::exists(sure_help_file))
+        {
+            std::cerr << "Help file not found ! please go to the project official website to get the help file." << std::endl;
+            return;
+        }
+
+        std::fstream file(sure_help_file.string(), std::ios::in | std::ios::binary);
+        if (!file.is_open())
+        {
+            std::cerr << "Failed to open help file : " << sure_help_file.string() << std::endl;
+            return;
+        }
+
+        // output help file content
+        std::string line;
+
+        // if true: out highlight help file content, else: out help file content as is
+        if (enable_highlight || enableHelpHighlight)
+        {
+            while (std::getline(file, line))
+            {
+                Color::Ht::_printHighlightString(getRandomColor(), line);
+            }
+            file.close();
+            return;
+        }
+
+        while (std::getline(file, line))
+        {
+            std::cout << line << std::endl;
+        }
+        file.close();
+    }
+
 } // namespace IronHelp

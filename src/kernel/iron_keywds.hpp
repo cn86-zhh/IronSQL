@@ -28,6 +28,10 @@ namespace IronKeywds
         const static std::string DOT;
         const static std::string TO;
 
+    private:
+        const static std::string ZH_CN;
+        const static std::string EN_US;
+
     public:
         const static std::string none_();
         const static int zero_();
@@ -43,6 +47,10 @@ namespace IronKeywds
         const static bool enable_();
         const static std::string dot_();
         const static std::string to_();
+
+    public:
+        const static std::string lang_zh_cn();
+        const static std::string lang_en_us();
     }; // class Kw
 
     class Level
@@ -63,6 +71,7 @@ namespace IronKeywds
         const static std::string warn();
         const static std::string fatal();
     }; // class Level
+
 } // namespace IronKeywds
 
 #endif // IRON_KEYWDS_HPP

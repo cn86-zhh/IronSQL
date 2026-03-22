@@ -79,7 +79,7 @@ namespace IronMain
 
         if (isInteractive)
         {
-            IronHelp::ShowHelpInformation::welcome();
+            IronHelp::ShowHelpInformation::welcome(_ENABLE_HIGHLIGHT);
         }
 
         std::string buffer; // used to accumulate multi-line statements

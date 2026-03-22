@@ -66,6 +66,19 @@ namespace IronServer
             ios::prt64("disable debug mode!");
             lgs::setDebug(FALSE);
         }
+
+        if (settings_sentence == "set -enable --highlight --for-help")
+        {
+            ios::prt64("using highlight for help messages!");
+            IronHelp::ShowHelpInformation::setHighlight(TRUE);
+            lgs::IRON_DEBUG("using highlight for help messages! true");
+        }
+
+        else
+        {
+            ios::err64(keyw::error() + "invalid settings sentence.");
+            lgs::IRON_DEBUG("invalid settings sentence.");
+        }
     }
 
     /**
@@ -346,7 +359,11 @@ namespace IronServer
         }
         else if (help_cmd == "help -syntax --all")
         {
-            IronHelp::ShowHelpInformation::showIronSQLSyntaxInformation(enableHighlight);
+            IronHelp::ShowHelpInformation::showIronSQLSyntaxInformationDetails(IronKeywds::Kw::lang_en_us());
+        }
+        else if (help_cmd == "help -syntax --all --zh_cn")
+        {
+            IronHelp::ShowHelpInformation::showIronSQLSyntaxInformationDetails(IronKeywds::Kw::lang_zh_cn(), enableHighlight);
         }
         else
         {

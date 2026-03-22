@@ -27,6 +27,16 @@ namespace IronKeywds
     const std::string Kw::BOOL{"bool"};
     const std::string Kw::ERRT{"errt"};
 
+    /*******************************************************
+     * @brief Returns the "zh_cn", "en_us" keyword.        *
+     *                                                     *
+     * This function returns the string "zh_cn", "en_us",  *
+     * used to indicate the Chinese and English, language. *
+     *******************************************************/
+
+    const std::string Kw::ZH_CN{"zh_cn"};
+    const std::string Kw::EN_US{"en_us"};
+
     /***********************************************************
      * zone brief:                                             *
      *                                                         *
@@ -231,4 +241,24 @@ namespace IronKeywds
      * @return The "fatal" keyword.                  *
      ************************************************/
     const std::string Level::fatal() { return FATAL; }
+
+    /*************************************************
+     * @brief Returns the "zh_cn" keyword.           *
+     *                                               *
+     * This function returns the string "zh_cn",     *
+     * used to indicate the Chinese language.        *
+     *                                               *
+     * @return The "zh_cn" keyword.                  *
+     ************************************************/
+    const std::string Kw::lang_zh_cn() { return ZH_CN; }
+
+    /*************************************************
+     * @brief Returns the "en_us" keyword.           *
+     *                                               *
+     * This function returns the string "en_us",     *
+     * used to indicate the English language.        *
+     *                                               *
+     * @return The "en_us" keyword.                  *
+     ************************************************/
+    const std::string Kw::lang_en_us() { return EN_US; }
 } // namespace IronKeywds
