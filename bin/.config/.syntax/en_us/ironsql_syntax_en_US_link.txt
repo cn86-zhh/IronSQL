@@ -1,0 +1,16 @@
+[*] 'LINK' Operation Syntax:
+
+[*] Use 'LINK' statement to link table data:
+[*] link table from <table1> to <table2> new <new_table>;
+[*] link table from <database1.table1> to <database1.table2> new <new_table>;
+
+[*] Use 'LINK SHOW' statement to display multi-table combined data:
+[*] link show table from <table1>,<table2>,...;
+[*] link show table from <database_name>:<table1>,<table2>,...;
+
+[*] Note!
+[*] When using the 'LINK' statement, you should pay attention to the following points:
+    link table: Merge two tables of data and create a new table
+    link show table: Directly display multi-table combined data without creating a new table
+    When merging tables, the new table name must not exist
+    When displaying multi-table combined data, the tables must exist

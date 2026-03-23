@@ -16,7 +16,7 @@
  *           Global alias settings                           *
  ************************************************************/
 
-using ios = IronStdOst::OutStream;
+using ios = IronStdOut::Stream;
 using kwl = IronKeywds::Level;
 using log = IronLogSystem::LogOut;
 
@@ -198,7 +198,7 @@ namespace _IronInnerProces_
 
         if (delete_res == 0)
         {
-            ios::err64(kwl::fatal() + "delete database failed: " + database_name);
+            ios::err(kwl::fatal() + "delete database failed: " + database_name);
             log::IRON_DEBUG("delete database failed: " + database_name);
         }
     }
@@ -523,7 +523,7 @@ namespace _IronInnerProces_
 
         if (delete_res == 0)
         {
-            ios::err64("fatal: delete table failed: " + table_name);
+            ios::err("fatal: delete table failed: " + table_name);
             log::IRON_DEBUG("delete table failed: " + table_name);
             return;
         }
@@ -766,7 +766,7 @@ namespace IronProces
 
         if (_IronInnerProces_::_Level::_Database::_inspectExistDatabase(database_name))
         {
-            ios::err64(IronKeywds::Level::error() + "database already exist:'" + database_name + "'");
+            ios::err(IronKeywds::Level::error() + "database already exist:'" + database_name + "'");
             log::IRON_DEBUG("database already exist:'" + database_name + "'");
             return;
         }
@@ -789,7 +789,7 @@ namespace IronProces
 
         if (!_IronInnerProces_::_Level::_Database::_inspectExistDatabase(database_name))
         {
-            ios::err64(IronKeywds::Level::error() + "database not exist:'" + database_name + "'");
+            ios::err(IronKeywds::Level::error() + "database not exist:'" + database_name + "'");
             log::IRON_DEBUG("database not exist:'" + database_name + "'");
             return;
         }
@@ -816,21 +816,21 @@ namespace IronProces
         std::string database_name{IronStatus::Manage::getDatabaseName()};
         if (database_name == IronKeywds::Kw::none_())
         {
-            ios::err64(IronKeywds::Level::error() + "database not selected,you must choice a database object first.");
+            ios::err(IronKeywds::Level::error() + "database not selected,you must choice a database object first.");
             log::IRON_DEBUG("database not selected,you must choice a database object first.");
             return;
         }
 
         if (field_names.size() != field_types.size())
         {
-            ios::err64(IronKeywds::Level::error() + "field names and types number not match");
+            ios::err(IronKeywds::Level::error() + "field names and types number not match");
             log::IRON_DEBUG("field names and types number not match");
             return;
         }
 
         if (_IronInnerProces_::_Pub::_inspectFieldNameRepeat(field_names))
         {
-            ios::err64(IronKeywds::Level::error() + "repeat field names");
+            ios::err(IronKeywds::Level::error() + "repeat field names");
             log::IRON_DEBUG("repeat field names");
             return;
         }
@@ -839,7 +839,7 @@ namespace IronProces
         {
             if (IronVerify::Inspector::stringToMaskType(field_type) == IronStruct::MaskType::ERRT)
             {
-                ios::err64(IronKeywds::Level::error() + "unknown field type:'" + field_type + "'");
+                ios::err(IronKeywds::Level::error() + "unknown field type:'" + field_type + "'");
                 log::IRON_DEBUG("unknown field type:'" + field_type + "'");
                 return;
             };
@@ -847,7 +847,7 @@ namespace IronProces
 
         if (_IronInnerProces_::_Level::_Table::_inspectExistTable(database_name, table_name))
         {
-            ios::err64(IronKeywds::Level::error() + "table already exist:'" + table_name + "'");
+            ios::err(IronKeywds::Level::error() + "table already exist:'" + table_name + "'");
             log::IRON_DEBUG("table already exist:'" + table_name + "'");
             return;
         }
@@ -890,21 +890,21 @@ namespace IronProces
 
         if (database_name == IronKeywds::Kw::none_())
         {
-            ios::err64(IronKeywds::Level::error() + "database not selected,you must choice a database object first.");
+            ios::err(IronKeywds::Level::error() + "database not selected,you must choice a database object first.");
             log::IRON_DEBUG("database not selected,you must choice a database object first.");
             return;
         }
 
         if (_IronInnerProces_::_Pub::_inspectFieldNameRepeat(field_names))
         {
-            ios::err64(IronKeywds::Level::error() + "repeat field names");
+            ios::err(IronKeywds::Level::error() + "repeat field names");
             log::IRON_DEBUG("repeat field names");
             return;
         }
 
         if (field_names.size() != field_values.size())
         {
-            ios::err64(IronKeywds::Level::error() + "field names and values number not match");
+            ios::err(IronKeywds::Level::error() + "field names and values number not match");
             log::IRON_DEBUG("field names and values number not match");
             return;
         }
@@ -914,7 +914,7 @@ namespace IronProces
 
         if (table_index == -1)
         {
-            ios::err64(IronKeywds::Level::error() + "table not exist:'" + table_name + "'");
+            ios::err(IronKeywds::Level::error() + "table not exist:'" + table_name + "'");
             log::IRON_DEBUG("table not exist:'" + table_name + "'");
             return;
         }
@@ -950,7 +950,7 @@ namespace IronProces
         // check if databases is empty
         if (_IronInnerProces_::_Level::_Database::_inspectEmptyDatabases())
         {
-            ios::err64(IronKeywds::Level::error() + "delete failed, databases is empty!");
+            ios::err(IronKeywds::Level::error() + "delete failed, databases is empty!");
             log::IRON_DEBUG("delete failed, databases is empty!");
             return;
         }
@@ -958,7 +958,7 @@ namespace IronProces
         // check if database exists
         if (!_IronInnerProces_::_Level::_Database::_inspectExistDatabase(database_name))
         {
-            ios::err64(IronKeywds::Level::error() + "delete failed, undefined database: " + database_name);
+            ios::err(IronKeywds::Level::error() + "delete failed, undefined database: " + database_name);
             log::IRON_DEBUG("delete failed, undefined database: " + database_name);
             return;
         }
@@ -988,7 +988,7 @@ namespace IronProces
         // check if databases is empty
         if (_IronInnerProces_::_Level::_Database::_inspectEmptyDatabases())
         {
-            ios::err64(IronKeywds::Level::error() + "delete failed, databases is empty!");
+            ios::err(IronKeywds::Level::error() + "delete failed, databases is empty!");
             log::IRON_DEBUG("delete failed, databases is empty!");
             return;
         }
@@ -996,7 +996,7 @@ namespace IronProces
         // check if database exists
         if (!_IronInnerProces_::_Level::_Database::_inspectExistDatabase(database_name))
         {
-            ios::err64(IronKeywds::Level::error() + "delete failed, undefined database: " + database_name);
+            ios::err(IronKeywds::Level::error() + "delete failed, undefined database: " + database_name);
             log::IRON_DEBUG("delete failed, undefined database: " + database_name);
             return;
         }
@@ -1004,7 +1004,7 @@ namespace IronProces
         // check if table exists
         if (!_IronInnerProces_::_Level::_Table::_inspectExistTable(database_name, table_name))
         {
-            ios::err64(IronKeywds::Level::error() + "delete failed, undefined table: " + table_name);
+            ios::err(IronKeywds::Level::error() + "delete failed, undefined table: " + table_name);
             log::IRON_DEBUG("delete failed, undefined table: " + table_name);
             return;
         }
@@ -1039,14 +1039,14 @@ namespace IronProces
 
         if (!is_absolute && IronStatus::Manage::getDatabaseName() == IronKeywds::Kw::none_())
         {
-            ios::err64(IronKeywds::Level::error() + "no database selected");
+            ios::err(IronKeywds::Level::error() + "no database selected");
             log::IRON_DEBUG("no database selected");
             return;
         }
 
         if (!is_absolute && IronStatus::Manage::getDatabaseName() != database_name)
         {
-            ios::err64(IronKeywds::Level::error() + "database name not match");
+            ios::err(IronKeywds::Level::error() + "database name not match");
             log::IRON_DEBUG("database name not match");
             return;
         }
@@ -1058,7 +1058,7 @@ namespace IronProces
         {
             if (!_IronInnerProces_::_Level::_Table::_inspectExistTable(database_name, tb_name))
             {
-                ios::err64(IronKeywds::Level::error() + "undefined table: " + tb_name);
+                ios::err(IronKeywds::Level::error() + "undefined table: " + tb_name);
                 log::IRON_DEBUG("undefined table: " + tb_name);
                 return;
             }
@@ -1067,7 +1067,7 @@ namespace IronProces
         // check if new table name exists
         if (_IronInnerProces_::_Level::_Table::_inspectExistTable(database_name, new_table_name))
         {
-            ios::err64(IronKeywds::Level::error() + "defined table can not be used to link table: " + new_table_name);
+            ios::err(IronKeywds::Level::error() + "defined table can not be used to link table: " + new_table_name);
             log::IRON_DEBUG("defined table can not be used to link table: " + new_table_name);
             return;
         }
@@ -1087,14 +1087,14 @@ namespace IronProces
         // check if field names and types size match
         if (src_fields.size() != src_types.size())
         {
-            ios::err64(IronKeywds::Level::error() + "field names and types size mismatch for source table");
+            ios::err(IronKeywds::Level::error() + "field names and types size mismatch for source table");
             log::IRON_DEBUG("field names and types size mismatch for source table");
             return;
         }
 
         if (dst_fields.size() != dst_types.size())
         {
-            ios::err64(IronKeywds::Level::error() + "field names and types size mismatch for destination table");
+            ios::err(IronKeywds::Level::error() + "field names and types size mismatch for destination table");
             log::IRON_DEBUG("field names and types size mismatch for destination table");
             return;
         }
@@ -1116,7 +1116,7 @@ namespace IronProces
         // check if merged field names and types size match
         if (new_fields.size() != new_types.size())
         {
-            ios::err64(IronKeywds::Level::error() + "merged field names and types size mismatch");
+            ios::err(IronKeywds::Level::error() + "merged field names and types size mismatch");
             log::IRON_DEBUG("merged field names and types size mismatch");
             return;
         }
@@ -1576,14 +1576,14 @@ namespace IronProces
             _IronInnerProces_::_Level::_Database::_inspectEmptyDatabases() ||
             !_IronInnerProces_::_Level::_Database::_inspectExistDatabase(database_name))
         {
-            ios::err64(kwl::error() + "database not exist: '" + database_name + "'");
+            ios::err(kwl::error() + "database not exist: '" + database_name + "'");
             return {};
         }
 
         // 检查表参数合法性
         if (table_names.size() < 2)
         {
-            ios::err64(kwl::error() + "at least 2 tables are required");
+            ios::err(kwl::error() + "at least 2 tables are required");
             return {};
         }
 
@@ -1593,7 +1593,7 @@ namespace IronProces
             if (_IronInnerProces_::_Level::_Table::_inspectEmptyTables(database_name) ||
                 !_IronInnerProces_::_Level::_Table::_inspectExistTable(database_name, table_name))
             {
-                ios::err64(kwl::error() + "table not exist: '" + table_name + "'");
+                ios::err(kwl::error() + "table not exist: '" + table_name + "'");
                 return {};
             }
         }

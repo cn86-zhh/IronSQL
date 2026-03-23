@@ -3,7 +3,7 @@
 #ifndef STDIOS_HPP
 #define STDIOS_HPP
 
-#include "iron_stdost.hpp"
+#include "iron_stdout.hpp"
 
 namespace IronStdIos
 {

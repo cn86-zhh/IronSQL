@@ -1,0 +1,16 @@
+[*] 'LINK' 操作语法:
+
+[*] 使用 'LINK' 语句关联表数据:
+[*] link table from <table1> to <table2> new <new_table>;
+[*] link table from <database1.table1> to <database1.table2> new <new_table>;
+
+[*] 使用 'LINK SHOW' 语句显示多表联合数据:
+[*] link show table from <table1>,<table2>,...;
+[*] link show table from <database_name>:<table1>,<table2>,...;
+
+[*] 注意!
+[*] 在使用'LINK' 语句时,应当注意以下几点:
+    link table: 合并两张表数据并创建新表
+    link show table: 直接显示多表联合数据，不创建新表
+    合并表时，新表名必须不存在
+    显示多表联合数据时，表必须存在

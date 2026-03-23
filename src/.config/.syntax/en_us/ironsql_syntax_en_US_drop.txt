@@ -1,0 +1,12 @@
+# 'DROP' Operation Syntax
+
+[*] Use 'DROP' statement to delete a database object:
+[*] drop database <database_obj>;
+
+[*] Use 'DROP' statement to delete a table object:
+[*] drop table <table_obj>;
+
+[*] Note!
+[*] When using the 'DROP' statement to delete a database object or table object,
+you should pay attention to the existence of the database and table. If you delete a non-existent object,
+an error message will be thrown.

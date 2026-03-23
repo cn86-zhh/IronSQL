@@ -12,7 +12,7 @@
  *           Global alias settings                           *
  ************************************************************/
 
-using ios = IronStdOst::OutStream;
+using ios = IronStdOut::Stream;
 using log = IronLogSystem::LogOut;
 
 namespace _IronInnerFormatOut_
@@ -199,7 +199,7 @@ namespace IronFormatOut
 
         if (databases.empty())
         {
-            ios::err64(IronKeywds::Level::error() + "empty databases.");
+            ios::err(IronKeywds::Level::error() + "empty databases.");
             log::IRON_DEBUG("empty databases.");
             return;
         }
@@ -223,7 +223,7 @@ namespace IronFormatOut
 
         if (table_names.empty())
         {
-            ios::err64(IronKeywds::Level::error() + "empty tables.");
+            ios::err(IronKeywds::Level::error() + "empty tables.");
             log::IRON_DEBUG("empty tables.");
             return;
         }
@@ -248,7 +248,7 @@ namespace IronFormatOut
 
         if (field_names.empty() || field_types.empty())
         {
-            ios::err64(IronKeywds::Level::error() + "empty table struct.");
+            ios::err(IronKeywds::Level::error() + "empty table struct.");
             log::IRON_DEBUG("empty table struct.");
             return;
         }
@@ -280,7 +280,7 @@ namespace IronFormatOut
 
         if (std::find(table_names.begin(), table_names.end(), table_name) == table_names.end())
         {
-            ios::err64(IronKeywds::Level::error() + "undefined table:'" + table_name + "'");
+            ios::err(IronKeywds::Level::error() + "undefined table:'" + table_name + "'");
             log::IRON_DEBUG("undefined table:'" + table_name + "'");
             return;
         }
@@ -288,7 +288,7 @@ namespace IronFormatOut
         auto table_datas = IronProces::Gets::getTableDatas(database_name, table_name);
         if (table_datas.empty())
         {
-            ios::err64(IronKeywds::Level::error() + "empty table datas.");
+            ios::err(IronKeywds::Level::error() + "empty table datas.");
             log::IRON_DEBUG("empty table datas.");
             return;
         }
@@ -337,7 +337,7 @@ namespace IronFormatOut
         auto target_query_array = IronProces::Gets::getTargetQueryArray(database_name, table_name, field_names, ref_bool);
         if (!ref_bool)
         {
-            ios::err64(IronKeywds::Level::error() + "undefined field.");
+            ios::err(IronKeywds::Level::error() + "undefined field.");
             log::IRON_DEBUG("undefined field.");
             return;
         }
@@ -397,7 +397,7 @@ namespace IronFormatOut
 
         if (field_widths.size() != row_widths.size())
         {
-            ios::err64(IronKeywds::Level::error() + "field width and row width size not match.");
+            ios::err(IronKeywds::Level::error() + "field width and row width size not match.");
             log::IRON_DEBUG("field width and row width size not match.");
             return;
         }
@@ -409,7 +409,7 @@ namespace IronFormatOut
 
         if (last_row_widths.size() != link_table_fields.size())
         {
-            ios::err64(IronKeywds::Level::error() + "last row width size not match.");
+            ios::err(IronKeywds::Level::error() + "last row width size not match.");
             log::IRON_DEBUG("last row width size not match.");
             return;
         }

@@ -67,12 +67,13 @@ function StartCompileIronSQL()
     local header_kernel="${SRC}/kernel"
     local header_test="${SRC}/test"
     local header_logsystem="${SRC}/logsystem"
-    local header_linux="${SRC}/linux"
-    local header_windows="${SRC}/windows"
+    local header_linux="${SRC}/.linux"
+    local header_windows="${SRC}/.windows"
     local header_stdiostreams="${SRC}/stdiostreams"
     local header_cross_platform="${SRC}/.include"
     local header_loads="${SRC}/loads"
     local header_path_manage="${SRC}/.path"
+    local header_ironfsystem="${SRC}/.ironfsystem"
     
     readonly binary_file
     readonly log_file
@@ -86,6 +87,7 @@ function StartCompileIronSQL()
         "${SRC}/iron_main.cpp"
         "${SRC}/test/iron_test.cpp"
         "${SRC}/library/iron_server.cpp"
+        "${SRC}/library/iron_server_settings.cpp"
         "${SRC}/library/iron_handle.cpp"
         "${SRC}/library/iron_status.cpp"
         "${SRC}/library/iron_fmtout.cpp"
@@ -98,12 +100,15 @@ function StartCompileIronSQL()
         "${SRC}/kernel/iron_verify.cpp"
         "${SRC}/kernel/iron_syntax.cpp"
         "${SRC}/logsystem/iron_logsystem.cpp"
-        "${SRC}/stdiostreams/iron_stdost.cpp"
+        "${SRC}/stdiostreams/iron_stdout.cpp"
         "${SRC}/loads/iron_load_settings_conf.cpp"
         "${SRC}/.path/iron_path_manage.cpp"
         "${SRC}/.path/iron_path_windows.cpp"
         "${SRC}/.path/iron_path_linux.cpp"
         "${SRC}/.path/iron_path_init.cpp"
+        "${SRC}/.ironfsystem/iron_file_system.cpp"
+        "${SRC}/.linux/iron_linux_systempath.cpp"
+        "${SRC}/.windows/iron_windows_systempath.cpp"
     )
     
     # Detect operating system
@@ -138,6 +143,7 @@ EOF
         -I "${header_cross_platform}" \
         -I "${header_loads}" \
         -I "${header_path_manage}" \
+        -I "${header_ironfsystem}" \
         "${cpp_file_array[@]}" "${SRC}/resource.o" -o "${binary_file}" 2>"${log_file}"
         then
             # Clean up resource files
@@ -164,6 +170,7 @@ EOF
         -I "${header_cross_platform}" \
         -I "${header_loads}" \
         -I "${header_path_manage}" \
+        -I "${header_ironfsystem}" \
         "${cpp_file_array[@]}" -o "${binary_file}" 2>"${log_file}"
         then
             CompileSuccessPrompt

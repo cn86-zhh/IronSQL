@@ -1,0 +1,17 @@
+[*] 'SHOW' Operation Syntax:
+
+[*] Use 'SHOW' statement to display information:
+[*] show databases;
+[*] show tables;
+[*] show struct from <table_name>;
+[*] show struct from <database_name.table_name>;
+[*] show struct <table_name>;
+[*] show datas <table_name>;
+
+[*] Note!
+[*] When using the 'SHOW' statement, you should pay attention to the following points:
+    show databases: Display all databases
+    show tables: Display all tables in the current database
+    show struct: Display table structure
+    show datas: Display table data
+    When using show tables, show struct, show datas, you must select a database first (using the USE statement)

@@ -1,0 +1,16 @@
+[*] 'SETTINGS' 操作语法:
+
+[*] 使用 'SET' 语句调整设置:
+[*] set -enable --debug --highlight
+[*] set -disable --debug --highlight
+[*] set -enable --debug
+[*] set -disable --debug
+[*] set -enable --highlight --for-help
+
+[*] 注意!
+[*] 在使用'SET' 语句调整设置时,应当注意以下几点:
+    set -enable --debug --highlight: 启用调试模式和高亮
+    set -disable --debug --highlight: 禁用调试模式和高亮
+    set -enable --debug: 启用调试模式
+    set -disable --debug: 禁用调试模式
+    set -enable --highlight --for-help: 为帮助信息启用高亮

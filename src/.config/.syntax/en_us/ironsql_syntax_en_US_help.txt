@@ -1,0 +1,20 @@
+[*] 'HELP' Operation Syntax:
+
+[*] Use 'HELP' statement to get help information:
+[*] help -p
+[*] help -s
+[*] help -database
+[*] help -table
+[*] help -data
+[*] help -syntax --all
+[*] help -syntax --all --zh_cn
+
+[*] Note!
+[*] Help commands are used to get various help information for IronSQL:
+    help -p: Show project progress
+    help -s: Show help guide
+    help -database: Show database-related syntax
+    help -table: Show table-related syntax
+    help -data: Show data operation-related syntax
+    help -syntax --all: Show all syntax information (English)
+    help -syntax --all --zh_cn: Show all syntax information (Chinese)

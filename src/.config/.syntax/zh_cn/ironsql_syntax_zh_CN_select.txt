@@ -1,0 +1,13 @@
+[*] 'SELECT' 操作语法:
+
+[*] 使用 'SELECT' 语句查询数据:
+[*] select * from <table_name>;
+[*] select <field1>, <field2>, ... from <table_name>;
+[*] select * from <database_name.table_name>;
+[*] select <field1>, <field2>, ... from <database_name.table_name>;
+
+[*] 注意!
+[*] 在使用'SELECT' 语句查询数据时,应当注意以下几点:
+    必须先选择数据库(使用USE语句)，除非使用完整的数据库.表名格式
+    表必须存在
+    字段名必须存在于表结构中

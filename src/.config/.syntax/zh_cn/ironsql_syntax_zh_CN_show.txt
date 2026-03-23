@@ -1,0 +1,17 @@
+[*] 'SHOW' 操作语法:
+
+[*] 使用 'SHOW' 语句显示信息:
+[*] show databases;
+[*] show tables;
+[*] show struct from <table_name>;
+[*] show struct from <database_name.table_name>;
+[*] show struct <table_name>;
+[*] show datas <table_name>;
+
+[*] 注意!
+[*] 在使用'SHOW' 语句时,应当注意以下几点:
+    show databases: 显示所有数据库
+    show tables: 显示当前数据库的所有表
+    show struct: 显示表结构
+    show datas: 显示表数据
+    使用show tables、show struct、show datas时，必须先选择数据库(使用USE语句)

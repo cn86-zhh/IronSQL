@@ -12,7 +12,7 @@
 
 [*] 启用帮助文档高亮格式化输出:
 [-] <old> set -enable --highlight --for-help;
-[-] <new> set -enable --help-highlight;
+[-] <new> set -enable --help --highlight;
 
 [*] 启用轻量过程调试模式:
 [!] 注意: 这个模式原则上只允许开发者使用,但是 IronSQL 的设计目的不仅仅是让用户轻而易举的使用

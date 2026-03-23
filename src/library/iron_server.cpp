@@ -20,7 +20,7 @@
  *      class     -> LogOut                        *
  **************************************************/
 
-using ios = IronStdOst::OutStream;
+using ios = IronStdOut::Stream;
 using lgs = IronLogSystem::LogOut;
 
 namespace IronServer
@@ -42,41 +42,50 @@ namespace IronServer
         // using debug mode with highlight.
         if (settings_sentence == "set -enable --debug --highlight")
         {
-            ios::prt64("using debug mode with highlight!");
+            ios::prt("using debug mode with highlight!");
             lgs::setDebugHighlight(TRUE);
         }
 
         // disable debug mode with highlight.
         if (settings_sentence == "set -disable --debug --highlight")
         {
-            ios::prt64("disable debug mode with highlight!");
+            ios::prt("disable debug mode with highlight!");
             lgs::setDebugHighlight(FALSE);
         }
 
         // using debug mode.
         if (settings_sentence == "set -enable --debug")
         {
-            ios::prt64("using debug mode!");
+            ios::prt("using debug mode!");
             lgs::setDebug(TRUE);
         }
 
         // disable debug mode.
         if (settings_sentence == "set -disable --debug")
         {
-            ios::prt64("disable debug mode!");
+            ios::prt("disable debug mode!");
             lgs::setDebug(FALSE);
         }
 
+        // using highlight for help messages.
         if (settings_sentence == "set -enable --highlight --for-help")
         {
-            ios::prt64("using highlight for help messages!");
+            ios::prt("using highlight for help messages!");
             IronHelp::ShowHelpInformation::setHighlight(TRUE);
             lgs::IRON_DEBUG("using highlight for help messages! true");
         }
 
+        // disable highlight for help messages.
+        if (settings_sentence == "set -disable --highlight --for-help")
+        {
+            ios::prt("disable highlight for help messages!");
+            IronHelp::ShowHelpInformation::setHighlight(FALSE);
+            lgs::IRON_DEBUG("using highlight for help messages! false");
+        }
+
         else
         {
-            ios::err64(keyw::error() + "invalid settings sentence.");
+            ios::err(keyw::error() + "invalid settings sentence.");
             lgs::IRON_DEBUG("invalid settings sentence.");
         }
     }
@@ -89,8 +98,7 @@ namespace IronServer
      *
      * @param query The SQL select sentence to process.
      */
-    static void
-    showTableStruct(const std::string &query)
+    static void showTableStruct(const std::string &query)
     {
         /***************************************************************************
          * expected processing sentence:                                           *
@@ -102,7 +110,7 @@ namespace IronServer
 
         if (tmp_list.empty())
         {
-            ios::err64(keyw::error() + "invalid query sentence.");
+            ios::err(keyw::error() + "invalid query sentence.");
             lgs::IRON_DEBUG("invalid query sentence.");
             return;
         }
@@ -118,7 +126,7 @@ namespace IronServer
         if (tmp_list.size() == 2)
         {
             database_name = tmp_list.at(0);
-            ios::prt64("database_name:" + database_name);
+            ios::prt("database_name:" + database_name);
             lgs::IRON_DEBUG("database_name:" + database_name);
             table_name = tmp_list.at(1);
         }
@@ -146,7 +154,7 @@ namespace IronServer
 
         if (tmp_list.empty())
         {
-            ios::err64(keyw::error() + "invalid query sentence.");
+            ios::err(keyw::error() + "invalid query sentence.");
             lgs::IRON_DEBUG("invalid query sentence.");
             return;
         }
@@ -212,7 +220,7 @@ namespace IronServer
         }
         else
         {
-            ios::err64(keyw::error() + "invalid link table sentence: '" + query + "'");
+            ios::err(keyw::error() + "invalid link table sentence: '" + query + "'");
             lgs::IRON_DEBUG("invalid link table sentence: '" + query + "'");
             return;
         }
@@ -274,7 +282,7 @@ namespace IronServer
 
         if (select_pos == std::string::npos || from_pos == std::string::npos)
         {
-            ios::err64(keyw::error() + "invalid select sentence");
+            ios::err(keyw::error() + "invalid select sentence");
             lgs::IRON_DEBUG("invalid select sentence");
             return;
         }
@@ -292,7 +300,7 @@ namespace IronServer
         // Detection database object name not is none.
         if (database_name == IronKeywds::Kw::none_())
         {
-            ios::err64(keyw::error() + "no database selected");
+            ios::err(keyw::error() + "no database selected");
             lgs::IRON_DEBUG("no database selected");
             return;
         }
@@ -409,7 +417,7 @@ namespace IronServer
         {
             if (IronStatus::Manage::getDatabaseName() == IronKeywds::Kw::none_())
             {
-                ios::err64(keyw::error() + "no database selected");
+                ios::err(keyw::error() + "no database selected");
                 lgs::IRON_DEBUG(keyw::error() + "no database selected");
                 return;
             }
@@ -421,7 +429,7 @@ namespace IronServer
         {
             if (IronStatus::Manage::getDatabaseName() == IronKeywds::Kw::none_())
             {
-                ios::err64(keyw::error() + "no database selected");
+                ios::err(keyw::error() + "no database selected");
                 lgs::IRON_DEBUG("no database selected");
                 return;
             }
@@ -430,7 +438,7 @@ namespace IronServer
 
             if (table_name.empty())
             {
-                ios::err64(keyw::error() + "no table selected");
+                ios::err(keyw::error() + "no table selected");
                 lgs::IRON_DEBUG("no table selected");
                 return;
             }
@@ -473,7 +481,7 @@ namespace IronServer
 
             if (database_name == IronKeywds::Kw::none_())
             {
-                ios::err64(keyw::error() + "no database selected");
+                ios::err(keyw::error() + "no database selected");
                 lgs::IRON_DEBUG("no database selected");
                 return;
             }
@@ -488,7 +496,7 @@ namespace IronServer
 
             if (database_name == IronKeywds::Kw::none_())
             {
-                ios::err64(keyw::error() + "no database selected");
+                ios::err(keyw::error() + "no database selected");
                 lgs::IRON_DEBUG("no database selected");
                 return;
             }
@@ -504,7 +512,7 @@ namespace IronServer
 
             if (bracket_pos == std::string::npos)
             {
-                ios::err64(keyw::error() + "invalid create table syntax");
+                ios::err(keyw::error() + "invalid create table syntax");
                 lgs::IRON_DEBUG("invalid create table syntax");
                 return;
             }
@@ -514,7 +522,7 @@ namespace IronServer
 
             if (table_name.empty())
             {
-                ios::err64(keyw::error() + "table name is empty");
+                ios::err(keyw::error() + "table name is empty");
                 lgs::IRON_DEBUG("table name is empty");
                 return;
             }
@@ -532,7 +540,7 @@ namespace IronServer
         {
             if (IronStatus::Manage::getDatabaseName() == IronKeywds::Kw::none_())
             {
-                ios::err64(keyw::error() + "no database selected");
+                ios::err(keyw::error() + "no database selected");
                 lgs::IRON_DEBUG("no database selected");
                 return;
             }
@@ -540,7 +548,7 @@ namespace IronServer
             std::string table_name = IronParser::Resolver::resolveInsertTableName(query);
             if (table_name.empty())
             {
-                ios::err64(keyw::error() + "table name is empty");
+                ios::err(keyw::error() + "table name is empty");
                 lgs::IRON_DEBUG("table name is empty");
                 return;
             }
@@ -548,7 +556,7 @@ namespace IronServer
             std::vector<std::string> field_names = IronParser::Resolver::resolveInsertFieldNames(query);
             if (field_names.empty())
             {
-                ios::err64(keyw::error() + "field names are empty");
+                ios::err(keyw::error() + "field names are empty");
                 lgs::IRON_DEBUG("field names are empty");
                 return;
             }
@@ -556,14 +564,14 @@ namespace IronServer
             std::vector<std::string> field_values = IronParser::Resolver::resolveInsertFieldValues(query);
             if (field_values.empty())
             {
-                ios::err64(keyw::error() + "field values are empty");
+                ios::err(keyw::error() + "field values are empty");
                 lgs::IRON_DEBUG("field values are empty");
                 return;
             }
 
             if (field_names.size() != field_values.size())
             {
-                ios::err64(keyw::error() + "field names and values count mismatch");
+                ios::err(keyw::error() + "field names and values count mismatch");
                 lgs::IRON_DEBUG("field names and values count mismatch");
                 return;
             }
@@ -593,7 +601,7 @@ namespace IronServer
             std::string database_name{IronStatus::Manage::getDatabaseName()};
             if (database_name == IronKeywds::Kw::none_())
             {
-                ios::err64(keyw::error() + "no database selected");
+                ios::err(keyw::error() + "no database selected");
                 lgs::IRON_DEBUG("no database selected");
                 return;
             }
@@ -607,7 +615,7 @@ namespace IronServer
         {
             if (lower_query.size() <= 15)
             {
-                ios::err64(keyw::error() + "invalid link table sentence:'" + lower_query + "'");
+                ios::err(keyw::error() + "invalid link table sentence:'" + lower_query + "'");
                 lgs::IRON_DEBUG("invalid link table sentence:'" + lower_query + "'");
                 return;
             }

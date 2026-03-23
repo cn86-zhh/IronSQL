@@ -1,0 +1,12 @@
+[*] 'CREATE' Operation Syntax:
+
+[*] Use 'CREATE' statement to create a database object:
+[*] create database <database_obj>;
+
+[*] Use 'CREATE' statement to create a table object:
+[*] create table <table_obj>;
+
+[*] Note!
+[*] When creating a database object or table object, you need to be careful about the following points:
+    The target database object to be created must not exist.
+    When creating a table, you need to use the 'USE' operation syntax first to ensure that an existing database object is selected, and ensure that the table object to be created does not exist.

@@ -29,6 +29,7 @@ set(SOURCE_FILES
     ${CMAKE_SOURCE_DIR}/src/iron_main.cpp
     ${CMAKE_SOURCE_DIR}/src/test/iron_test.cpp
     ${CMAKE_SOURCE_DIR}/src/library/iron_server.cpp
+    ${CMAKE_SOURCE_DIR}/src/library/iron_server_settings.cpp
     ${CMAKE_SOURCE_DIR}/src/library/iron_handle.cpp
     ${CMAKE_SOURCE_DIR}/src/library/iron_status.cpp
     ${CMAKE_SOURCE_DIR}/src/library/iron_fmtout.cpp
@@ -41,13 +42,15 @@ set(SOURCE_FILES
     ${CMAKE_SOURCE_DIR}/src/kernel/iron_verify.cpp
     ${CMAKE_SOURCE_DIR}/src/kernel/iron_syntax.cpp
     ${CMAKE_SOURCE_DIR}/src/logsystem/iron_logsystem.cpp
-    ${CMAKE_SOURCE_DIR}/src/stdiostreams/iron_stdost.cpp
+    ${CMAKE_SOURCE_DIR}/src/stdiostreams/iron_stdout.cpp
     ${CMAKE_SOURCE_DIR}/src/loads/iron_load_settings_conf.cpp
     ${CMAKE_SOURCE_DIR}/src/.path/iron_path_manage.cpp
     ${CMAKE_SOURCE_DIR}/src/.path/iron_path_windows.cpp
     ${CMAKE_SOURCE_DIR}/src/.path/iron_path_linux.cpp
     ${CMAKE_SOURCE_DIR}/src/.ironfsystem/iron_file_system.cpp
     ${CMAKE_SOURCE_DIR}/src/.path/iron_path_init.cpp
+    ${CMAKE_SOURCE_DIR}/src/.linux/iron_linux_systempath.cpp
+    ${CMAKE_SOURCE_DIR}/src/.windows/iron_windows_systempath.cpp
 )
 
 # 可执行文件

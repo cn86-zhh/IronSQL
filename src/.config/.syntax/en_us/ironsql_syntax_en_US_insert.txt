@@ -1,0 +1,11 @@
+[*] 'INSERT' Operation Syntax:
+
+[*] Use 'INSERT' statement to insert data:
+[*] insert into <table_name> (<field1>, <field2>, ...) values (<value1>, <value2>, ...);
+
+[*] Note!
+[*] When using the 'INSERT' statement to insert data, you should pay attention to the following points:
+    You must select a database first (using the USE statement)
+    The table must exist
+    The number of field names and values must match
+    The type of field values must be consistent with the type defined in the table structure

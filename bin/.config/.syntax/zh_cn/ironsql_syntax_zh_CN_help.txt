@@ -1,0 +1,20 @@
+[*] 'HELP' 操作语法:
+
+[*] 使用 'HELP' 语句获取帮助信息:
+[*] help -p
+[*] help -s
+[*] help -database
+[*] help -table
+[*] help -data
+[*] help -syntax --all
+[*] help -syntax --all --zh_cn
+
+[*] 注意!
+[*] 帮助命令用于获取IronSQL的各种帮助信息:
+    help -p: 显示项目进度
+    help -s: 显示帮助指南
+    help -database: 显示数据库相关语法
+    help -table: 显示表相关语法
+    help -data: 显示数据操作相关语法
+    help -syntax --all: 显示所有语法信息(英文)
+    help -syntax --all --zh_cn: 显示所有语法信息(中文)

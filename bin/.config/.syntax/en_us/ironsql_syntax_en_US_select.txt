@@ -1,0 +1,13 @@
+[*] 'SELECT' Operation Syntax:
+
+[*] Use 'SELECT' statement to query data:
+[*] select * from <table_name>;
+[*] select <field1>, <field2>, ... from <table_name>;
+[*] select * from <database_name.table_name>;
+[*] select <field1>, <field2>, ... from <database_name.table_name>;
+
+[*] Note!
+[*] When using the 'SELECT' statement to query data, you should pay attention to the following points:
+    You must select a database first (using the USE statement), unless you use the complete database.table name format
+    The table must exist
+    The field names must exist in the table structure
