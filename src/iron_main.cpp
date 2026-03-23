@@ -1,14 +1,6 @@
 #include <iostream>
 #include <string>
 
-// #ifdef _WIN32
-// #include <windows.h>
-// #include <io.h>
-// #include <fcntl.h>
-// #else
-// #include <unistd.h>
-// #endif
-
 #include "iron_cross_platform.hpp"
 #include "iron_handle.hpp"
 #include "iron_server.hpp"
