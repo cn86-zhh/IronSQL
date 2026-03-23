@@ -14,7 +14,6 @@ namespace IronLoadSettingsConf
         std::ifstream settingsConfFile(settingsConfFilePath);
         if (!settingsConfFile.is_open())
         {
-            std::cerr << "error: cannot open settings conf file: " << settingsConfFilePath << std::endl;
             return false;
         }
         std::string line;

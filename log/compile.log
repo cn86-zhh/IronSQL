@@ -1,5 +1,5 @@
 In file included from src/iron_main.cpp:4:
-src/.include/iron_cross_platform.hpp:7: warning: ignoring '#pragma  ' [-Wunknown-pragmas]
+src/.include/iron_cross_platform.hpp:7: warning: ignoring ‘#pragma  ’ [-Wunknown-pragmas]
     7 | #pragma
 In file included from src/iron_main.cpp:9:
 src/kernel/iron_keywds.hpp:37:9: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]
@@ -8,11 +8,11 @@ src/kernel/iron_keywds.hpp:37:9: warning: type qualifiers ignored on function re
 src/kernel/iron_keywds.hpp:47:9: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]
    47 |         const static bool enable_();
       |         ^~~~~
-src/iron_main.cpp: In function 'int main(int, char**)':
-src/iron_main.cpp:147:14: warning: unused parameter 'argc' [-Wunused-parameter]
+src/iron_main.cpp: In function ‘int main(int, char**)’:
+src/iron_main.cpp:147:14: warning: unused parameter ‘argc’ [-Wunused-parameter]
   147 | int main(int argc, char *argv[])
       |          ~~~~^~~~
-src/iron_main.cpp:147:26: warning: unused parameter 'argv' [-Wunused-parameter]
+src/iron_main.cpp:147:26: warning: unused parameter ‘argv’ [-Wunused-parameter]
   147 | int main(int argc, char *argv[])
       |                    ~~~~~~^~~~~~
 In file included from src/test/iron_test.cpp:4:
@@ -29,10 +29,10 @@ src/kernel/iron_keywds.hpp:37:9: warning: type qualifiers ignored on function re
 src/kernel/iron_keywds.hpp:47:9: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]
    47 |         const static bool enable_();
       |         ^~~~~
-src/library/iron_server_settings.cpp:49:6: warning: 'void ironSettingsDisable(const std::string&, bool&)' defined but not used [-Wunused-function]
+src/library/iron_server_settings.cpp:49:6: warning: ‘void ironSettingsDisable(const std::string&, bool&)’ defined but not used [-Wunused-function]
    49 | void ironSettingsDisable(const std::string &settings_sentence, bool &ref_result)
       |      ^~~~~~~~~~~~~~~~~~~
-src/library/iron_server_settings.cpp:13:6: warning: 'void ironSettingsEnable(const std::string&, bool&)' defined but not used [-Wunused-function]
+src/library/iron_server_settings.cpp:13:6: warning: ‘void ironSettingsEnable(const std::string&, bool&)’ defined but not used [-Wunused-function]
    13 | void ironSettingsEnable(const std::string &settings_sentence, bool &ref_result)
       |      ^~~~~~~~~~~~~~~~~~
 In file included from src/library/iron_handle.cpp:2:
@@ -56,51 +56,51 @@ src/kernel/iron_keywds.hpp:37:9: warning: type qualifiers ignored on function re
 src/kernel/iron_keywds.hpp:47:9: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]
    47 |         const static bool enable_();
       |         ^~~~~
-src/library/iron_fmtout.cpp: In static member function 'static void _IronInnerFormatOut_::_Fmt::_printLineNew(const std::vector<int>&)':
-src/library/iron_fmtout.cpp:153:26: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<int>::size_type' {aka 'long long unsigned int'} [-Wsign-compare]
+src/library/iron_fmtout.cpp: In static member function ‘static void _IronInnerFormatOut_::_Fmt::_printLineNew(const std::vector<int>&)’:
+src/library/iron_fmtout.cpp:153:26: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<int>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
   153 |         for (int i{0}; i < row_widths.size(); ++i)
       |                        ~~^~~~~~~~~~~~~~~~~~~
-src/library/iron_fmtout.cpp: In static member function 'static std::vector<int> _IronInnerFormatOut_::_Fmt::_computeRowWidths(const std::vector<int>&, const std::vector<std::__cxx11::basic_string<char> >&)':
-src/library/iron_fmtout.cpp:180:26: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<std::__cxx11::basic_string<char> >::size_type' {aka 'long long unsigned int'} [-Wsign-compare]
+src/library/iron_fmtout.cpp: In static member function ‘static std::vector<int> _IronInnerFormatOut_::_Fmt::_computeRowWidths(const std::vector<int>&, const std::vector<std::__cxx11::basic_string<char> >&)’:
+src/library/iron_fmtout.cpp:180:26: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<std::__cxx11::basic_string<char> >::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
   180 |         for (int i{0}; i < strings.size(); ++i)
       |                        ~~^~~~~~~~~~~~~~~~
-src/library/iron_fmtout.cpp: In static member function 'static void IronFormatOut::Printer::printTableDatas(const std::string&, const std::string&)':
-src/library/iron_fmtout.cpp:304:26: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<std::__cxx11::basic_string<char> >::size_type' {aka 'long long unsigned int'} [-Wsign-compare]
+src/library/iron_fmtout.cpp: In static member function ‘static void IronFormatOut::Printer::printTableDatas(const std::string&, const std::string&)’:
+src/library/iron_fmtout.cpp:304:26: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<std::__cxx11::basic_string<char> >::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
   304 |         for (int i{0}; i < field_names.size(); i++)
       |                        ~~^~~~~~~~~~~~~~~~~~~~
-src/library/iron_fmtout.cpp:312:26: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<std::vector<std::__cxx11::basic_string<char> > >::size_type' {aka 'long long unsigned int'} [-Wsign-compare]
+src/library/iron_fmtout.cpp:312:26: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<std::vector<std::__cxx11::basic_string<char> > >::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
   312 |         for (int i{0}; i < table_datas.size(); i++)
       |                        ~~^~~~~~~~~~~~~~~~~~~~
-src/library/iron_fmtout.cpp:315:30: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<std::__cxx11::basic_string<char> >::size_type' {aka 'long long unsigned int'} [-Wsign-compare]
+src/library/iron_fmtout.cpp:315:30: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<std::__cxx11::basic_string<char> >::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
   315 |             for (int j{0}; j < table_datas[i].size(); j++)
       |                            ~~^~~~~~~~~~~~~~~~~~~~~~~
-src/library/iron_fmtout.cpp: In static member function 'static void IronFormatOut::Printer::printTargetQuery(const std::string&, const std::string&, const std::vector<std::__cxx11::basic_string<char> >&)':
-src/library/iron_fmtout.cpp:352:27: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<std::__cxx11::basic_string<char> >::size_type' {aka 'long long unsigned int'} [-Wsign-compare]
+src/library/iron_fmtout.cpp: In static member function ‘static void IronFormatOut::Printer::printTargetQuery(const std::string&, const std::string&, const std::vector<std::__cxx11::basic_string<char> >&)’:
+src/library/iron_fmtout.cpp:352:27: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<std::__cxx11::basic_string<char> >::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
   352 |         for (int i = 0; i < field_names.size(); ++i)
       |                         ~~^~~~~~~~~~~~~~~~~~~~
-src/library/iron_fmtout.cpp:359:31: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<std::__cxx11::basic_string<char> >::size_type' {aka 'long long unsigned int'} [-Wsign-compare]
+src/library/iron_fmtout.cpp:359:31: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<std::__cxx11::basic_string<char> >::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
   359 |             for (int i = 0; i < row.size() && i < field_names.size(); ++i)
       |                             ~~^~~~~~~~~~~~
-src/library/iron_fmtout.cpp:359:49: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<std::__cxx11::basic_string<char> >::size_type' {aka 'long long unsigned int'} [-Wsign-compare]
+src/library/iron_fmtout.cpp:359:49: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<std::__cxx11::basic_string<char> >::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
   359 |             for (int i = 0; i < row.size() && i < field_names.size(); ++i)
       |                                               ~~^~~~~~~~~~~~~~~~~~~~
-src/library/iron_fmtout.cpp:368:27: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<std::__cxx11::basic_string<char> >::size_type' {aka 'long long unsigned int'} [-Wsign-compare]
+src/library/iron_fmtout.cpp:368:27: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<std::__cxx11::basic_string<char> >::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
   368 |         for (int i = 0; i < field_names.size(); ++i)
       |                         ~~^~~~~~~~~~~~~~~~~~~~
-src/library/iron_fmtout.cpp:379:31: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<std::__cxx11::basic_string<char> >::size_type' {aka 'long long unsigned int'} [-Wsign-compare]
+src/library/iron_fmtout.cpp:379:31: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<std::__cxx11::basic_string<char> >::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
   379 |             for (int i = 0; i < row.size(); ++i)
       |                             ~~^~~~~~~~~~~~
-src/library/iron_fmtout.cpp: In static member function 'static void IronFormatOut::Printer::printMultipleTableData(const std::string&, const std::vector<std::__cxx11::basic_string<char> >&)':
-src/library/iron_fmtout.cpp:405:40: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<int>::size_type' {aka 'long long unsigned int'} [-Wsign-compare]
+src/library/iron_fmtout.cpp: In static member function ‘static void IronFormatOut::Printer::printMultipleTableData(const std::string&, const std::vector<std::__cxx11::basic_string<char> >&)’:
+src/library/iron_fmtout.cpp:405:40: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<int>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
   405 |         for (int size_inx{0}; size_inx < field_widths.size(); size_inx++)
       |                               ~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
-src/library/iron_fmtout.cpp:420:30: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<std::__cxx11::basic_string<char> >::size_type' {aka 'long long unsigned int'} [-Wsign-compare]
+src/library/iron_fmtout.cpp:420:30: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<std::__cxx11::basic_string<char> >::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
   420 |         for (int idx{0}; idx < link_table_fields.size(); idx++)
       |                          ~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
-src/library/iron_fmtout.cpp:428:30: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<std::vector<std::__cxx11::basic_string<char> > >::size_type' {aka 'long long unsigned int'} [-Wsign-compare]
+src/library/iron_fmtout.cpp:428:30: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<std::vector<std::__cxx11::basic_string<char> > >::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
   428 |         for (int inx{0}; inx < link_table_datas.size(); inx++)
       |                          ~~~~^~~~~~~~~~~~~~~~~~~~~~~~~
-src/library/iron_fmtout.cpp:431:30: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<std::__cxx11::basic_string<char> >::size_type' {aka 'long long unsigned int'} [-Wsign-compare]
+src/library/iron_fmtout.cpp:431:30: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<std::__cxx11::basic_string<char> >::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
   431 |             for (int j{0}; j < link_table_datas.at(inx).size(); j++)
       |                            ~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 In file included from src/kernel/iron_proces.cpp:8:
@@ -110,8 +110,8 @@ src/kernel/iron_keywds.hpp:37:9: warning: type qualifiers ignored on function re
 src/kernel/iron_keywds.hpp:47:9: warning: type qualifiers ignored on function return type [-Wignored-qualifiers]
    47 |         const static bool enable_();
       |         ^~~~~
-src/kernel/iron_proces.cpp: In static member function 'static void _IronInnerProces_::_Level::_Data::_recordDataRowWidthToMap(const std::string&, const std::string&, const std::vector<int>&)':
-src/kernel/iron_proces.cpp:496:26: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<int>::size_type' {aka 'long long unsigned int'} [-Wsign-compare]
+src/kernel/iron_proces.cpp: In static member function ‘static void _IronInnerProces_::_Level::_Data::_recordDataRowWidthToMap(const std::string&, const std::string&, const std::vector<int>&)’:
+src/kernel/iron_proces.cpp:496:26: warning: comparison of integer expressions of different signedness: ‘int’ and ‘std::vector<int>::size_type’ {aka ‘long unsigned int’} [-Wsign-compare]
   496 |         for (int i{0}; i < field_value_widths.size(); ++i)
       |                        ~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
 In file included from src/kernel/iron_keywds.cpp:1:

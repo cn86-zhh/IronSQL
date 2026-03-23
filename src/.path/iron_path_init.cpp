@@ -11,9 +11,13 @@ namespace IronPathInit
 
         if (!std::filesystem::exists(tpath))
         {
-            if (!std::filesystem::create_directories(tpath))
+            try
             {
-                std::cerr << "create path failed: " << tpath.string() << std::endl;
+                std::filesystem::create_directories(tpath);
+            }
+            catch (const std::filesystem::filesystem_error &)
+            {
+                std::cerr << "error: create path failed (maybe permission denied)" << tpath.string() << std::endl;
                 return;
             }
         }

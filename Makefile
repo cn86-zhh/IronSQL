@@ -3,6 +3,16 @@ CXXFLAGS = -std=c++20 -static -Wall -Wextra
 TARGET = bin/ironsql
 LOG = log/compile.log
 
+# Detect operating system
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Linux)
+    PLATFORM = linux
+    USE_ICON = false
+else
+    PLATFORM = windows
+    USE_ICON = true
+endif
+
 SRC_DIR = src
 BUILD_DIR = build
 BIN_DIR = bin
@@ -56,10 +66,18 @@ ICON_PATH = img/IronSQL_1.ico
 
 all: $(TARGET)
 
+ifeq ($(USE_ICON),true)
 $(TARGET): $(OBJECT_FILES) $(RESOURCE_FILE)
+else
+$(TARGET): $(OBJECT_FILES)
+endif
 	@echo "Linking..."
 	@mkdir -p $(BIN_DIR)
+ifeq ($(USE_ICON),true)
 	@$(CXX) $(CXXFLAGS) $(OBJECT_FILES) $(RESOURCE_FILE) -o $(TARGET) 2>>$(LOG)
+else
+	@$(CXX) $(CXXFLAGS) $(OBJECT_FILES) -o $(TARGET) 2>>$(LOG)
+endif
 	@if [ $$? -eq 0 ]; then \
 		echo "Link successful!"; \
 		echo "Copying config files..."; \
@@ -80,12 +98,14 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
 		exit 1; \
 	fi
 
+ifeq ($(USE_ICON),true)
 $(RESOURCE_FILE): $(ICON_PATH)
 	@echo "Creating resource file..."
 	@mkdir -p $(BUILD_DIR)
 	@echo "1 ICON \"$(ICON_PATH)\"" > $(SRC_DIR)/resource.rc
 	@windres $(SRC_DIR)/resource.rc -o $(RESOURCE_FILE)
 	@rm -f $(SRC_DIR)/resource.rc
+endif
 
 clean:
 	@echo "Cleaning build files..."
