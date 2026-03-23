@@ -1,0 +1,25 @@
+[*] 这是 IronSQL 的设置语法文档详情
+[*] 时间 2026 年 03 月 23 日 上午 10:39
+
+[*] 注解 IronSQL 的所有设置语法都必须以这个文档为设计标准, 同时应当保持浅显易懂的语法模式.
+[*] 申明 由于 IronSQL 目前仅由一人开发与维护, 所以项目的进度与优化,问题修复的进度是极其缓慢
+[*]      的. 所以相对与"启用语法"的"禁用语法"而言, 有些 -disable 的功能并未实现, 请耐心等待.
+[!] 注意 本文档只会讲解 IronSQL 的启用语法, 而 IronSQL 的禁用语法与启用语法极其相似, 只需将
+[!]      -enable 替换为 -disable 即可.
+
+[*] 启用全局高亮:
+[-] set -enable --global-highlight;
+
+[*] 启用帮助文档高亮格式化输出:
+[-] <old> set -enable --highlight --for-help;
+[-] <new> set -enable --help-highlight;
+
+[*] 启用轻量过程调试模式:
+[!] 注意: 这个模式原则上只允许开发者使用,但是 IronSQL 的设计目的不仅仅是让用户轻而易举的使用
+[!] 它. 我们希望 IronSQL 是"裸奔"的, 我们希望每个用户都可以看见 IronSQL 的"齿轮".
+[-] set -enable --debug;
+
+[*] 启用高亮调试行:
+[-] set -enable --debug --highlight;
+
+[*] 
