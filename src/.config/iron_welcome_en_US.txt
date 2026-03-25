@@ -1,0 +1,11 @@
+Welcome To Use IronSQL V 0.0.1
+author: zhh
+help -s;                                [-] get more help details.
+help -p;                                [-] show IronSQL project progress.
+quit;                                   [-] exit IronSQL.
+exit;                                   [-] exit IronSQL.
+#, --, //                               [-] comment line.
+IronSQL Website And Warehouse
+https://www.gethub.com/cn86-zhh/IronSQL [-] github.
+https://www.gitee.com/cn86-zhh/IronSQL  [-] gitee.
+https://www.ironsql.com.org             [-] official website.

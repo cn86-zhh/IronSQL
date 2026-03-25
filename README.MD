@@ -66,8 +66,9 @@ IronSQL 不追求功能的大而全，而是专注于：
 │      辅助系统层                      │  日志、IO、文件系统
 │  ├─ 日志系统 (logsystem)           │  ├─ LogOut: 调试日志
 │  ├─ IO 流 (stdiostreams)            │  ├─ OutStream: 输入输出
-│  ├─ 文件系统 (.ironfsystem)        │  ├─ Fsys: 文件系统操作
-│  └─ 跨平台 (include/.include)       │  └─ 跨平台宏定义
+│  ├─ 文件系统 (fsystem)             │  ├─ HelpInfo: 帮助信息读取
+│  ├─ 路径系统 (psystem)             │  ├─ PathSystem: 路径管理
+│  ├─ 跨平台 (include/.include)       │  └─ 跨平台宏定义
 └─────────────────────────────────────────┘
 ```
 
@@ -76,8 +77,7 @@ IronSQL 不追求功能的大而全，而是专注于：
 使用 `std::variant` 实现编译时类型检查：
 
 ```cpp
-using Value = std::variant<long long, long, int, char,
-                          std::string, double, float, bool>;
+using Value = std::variant<long long, long, int, char, std::string, double, float, bool>;
 ```
 
 **支持的数据类型**：
@@ -195,9 +195,11 @@ link show table from users:user_roles,user_muxt,user_ooxx;
 
 ### 环境要求
 
-- **编译器**：支持 C++20 的编译器（GCC 10+, Clang 10+, MSVC 19.28+）
+- **编译器**：支持 C++20 的编译器（GCC 10+, Clang 10+）
 - **操作系统**：Windows 10+, Linux (Ubuntu 20.04+), macOS 11+
-- **构建工具**：Make 或 CMake（可选）
+- **构建工具**：Make
+
+**重要说明**：本项目已放弃使用 CMakeLists.txt，不再兼容 MSVC 编译器。我们统一使用 GNU/MinGW 与 CNU/'C/C++' 标准进行跨平台编译，以确保编译一致性和跨平台兼容性。
 
 ### 编译项目
 
@@ -271,6 +273,8 @@ IronSQL/
 │  ├─ logsystem/                # 日志系统
 │  ├─ stdiostreams/             # IO 流处理
 │  ├─ loads/                    # 配置加载
+│  ├─ fsystem/                  # 文件系统操作
+│  ├─ psystem/                  # 路径系统
 │  ├─ other/                    # 其他功能
 │  ├─ .config/                  # 配置文件
 │  ├─ .include/                 # 跨平台包含

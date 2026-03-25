@@ -7,6 +7,8 @@
 #include <string>
 #include <filesystem>
 #include <fstream>
+#include <vector>
+#include <mutex>
 
 namespace IronHelp
 {
@@ -15,15 +17,11 @@ namespace IronHelp
     private:
         ShowHelpInformation() = delete;
         ~ShowHelpInformation() = delete;
+        static std::mutex hmtx;
 
     public:
         static void setHighlight(const bool &enable_highlight);
-
-        static void welcome(const bool &enable_highlight = false);
-        static void showProjectProgress(const bool &enable_highlight = false);
-        static void showIronSQLSyntaxInformation(const bool &enable_highlight, const std::string &level_show);
-        static void showHelpGuide(const bool &enable_highlight = false);
-        static void showIronSQLSyntaxInformation(const bool &enable_highlight = false);
+        static void showWelcomeMessage(const std::string &lang, const bool &enable_highlight = false);
         static void showIronSQLSyntaxInformationDetails(const std::string &lang, const bool &enable_highlight = false);
     }; // class ShowHelpInformation
 } // namespace IronHelp

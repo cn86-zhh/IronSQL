@@ -74,6 +74,8 @@ function StartCompileIronSQL()
     local header_loads="${SRC}/loads"
     local header_path_manage="${SRC}/.path"
     local header_ironfsystem="${SRC}/.ironfsystem"
+    local header_psystem="${SRC}/psystem"
+    local header_fsystem="${SRC}/fsystem"
     
     readonly binary_file
     readonly log_file
@@ -107,6 +109,8 @@ function StartCompileIronSQL()
         "${SRC}/.path/iron_path_linux.cpp"
         "${SRC}/.path/iron_path_init.cpp"
         "${SRC}/.ironfsystem/iron_file_system.cpp"
+        "${SRC}/psystem/iron_path_system.cpp"
+        "${SRC}/fsystem/ironsql_read_help_info.cpp"
         "${SRC}/.linux/iron_linux_systempath.cpp"
         "${SRC}/.windows/iron_windows_systempath.cpp"
     )
@@ -144,6 +148,8 @@ EOF
         -I "${header_loads}" \
         -I "${header_path_manage}" \
         -I "${header_ironfsystem}" \
+        -I "${header_psystem}" \
+        -I "${header_fsystem}" \
         "${cpp_file_array[@]}" "${SRC}/resource.o" -o "${binary_file}" 2>"${log_file}"
         then
             # Clean up resource files
@@ -171,6 +177,8 @@ EOF
         -I "${header_loads}" \
         -I "${header_path_manage}" \
         -I "${header_ironfsystem}" \
+        -I "${header_psystem}" \
+        -I "${header_fsystem}" \
         "${cpp_file_array[@]}" -o "${binary_file}" 2>"${log_file}"
         then
             CompileSuccessPrompt
