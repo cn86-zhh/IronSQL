@@ -523,10 +523,9 @@ _Note: Performance data is based on memory operations, not including disk I/O_
 
 ## 联系方式
 
-- **作者**: cn86-zhh (GitHub) / ch86-zhh (Gitee)
-- **官方网站**: https://www.ironsql.org.com
-- **GitHub 项目**: https://github.com/cn86-zhh/IronSQL
-- **Gitee 项目**: https://gitee.com/ch86-zhh/IronSQL
+- **Author**: cn86-zhh (GitHub) / cn86-zhh (Gitee)
+- **GitHub Project**: https://github.com/cn86-zhh/IronSQL
+- **Gitee Project**: https://gitee.com/cn86-zhh/IronSQL (目前没有推送到 Gitee)
 
 ---
 
