@@ -246,7 +246,7 @@ namespace IronServer
         auto deli_pos = query.find(delimiter);
 
         std::string database_name{IronStatus::Manage::getDatabaseName()};
-        if (database_name == IronKeywds::Kw::none_() && deli_pos != std::string::npos)
+        if (deli_pos != std::string::npos) /* Bug修复: 2026-03-27日 PATH: src/.recode */
         {
             database_name = query.substr(0, deli_pos);
             IronHandle::Strings::strip(database_name);
@@ -344,34 +344,29 @@ namespace IronServer
      */
     static void ironSQLHelp(const std::string &help_cmd, bool &ref_result, const bool &enableHighlight)
     {
-        if (help_cmd == "help -p")
-        {
-            IronHelp::ShowHelpInformation::showProjectProgress(enableHighlight);
-        }
-
-        else if (help_cmd == "help -s")
+        if (help_cmd == "help -s")
         {
             IronHelp::ShowHelpInformation::showHelpGuide(enableHighlight);
         }
-        else if (help_cmd == "help -database")
-        {
-            IronHelp::ShowHelpInformation::showIronSQLSyntaxInformation(enableHighlight, "database");
-        }
-        else if (help_cmd == "help -table")
-        {
-            IronHelp::ShowHelpInformation::showIronSQLSyntaxInformation(enableHighlight, "table");
-        }
-        else if (help_cmd == "help -data")
-        {
-            IronHelp::ShowHelpInformation::showIronSQLSyntaxInformation(enableHighlight, "data");
-        }
         else if (help_cmd == "help -syntax --all")
         {
-            IronHelp::ShowHelpInformation::showIronSQLSyntaxInformationDetails(IronKeywds::Kw::lang_en_us());
+            IronHelp::ShowHelpInformation::showIronSQLSyntaxInformationDetails(IronKeywds::Kw::lang_en_us(), enableHighlight);
         }
         else if (help_cmd == "help -syntax --all --zh_cn")
         {
             IronHelp::ShowHelpInformation::showIronSQLSyntaxInformationDetails(IronKeywds::Kw::lang_zh_cn(), enableHighlight);
+        }
+        else if (help_cmd.substr(0, 26) == "help -syntax --more-zh_cn-")
+        {
+            std::string query_keyword{help_cmd.substr(26)};
+            IronHandle::Strings::strip(query_keyword);
+            IronHelp::ShowHelpInformation::showHelpMore(IronKeywds::Kw::lang_zh_cn(), query_keyword, enableHighlight);
+        }
+        else if (help_cmd.substr(0, 20) == "help -syntax --more-")
+        {
+            std::string query_keyword{help_cmd.substr(20)};
+            IronHandle::Strings::strip(query_keyword);
+            IronHelp::ShowHelpInformation::showHelpMore(IronKeywds::Kw::lang_en_us(), query_keyword, enableHighlight);
         }
         else
         {

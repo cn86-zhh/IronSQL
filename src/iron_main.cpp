@@ -71,7 +71,7 @@ namespace IronMain
 
         if (isInteractive)
         {
-            IronHelp::ShowHelpInformation::welcome(_ENABLE_HIGHLIGHT);
+            IronHelp::ShowHelpInformation::showWelcomeMessage(_ENABLE_HIGHLIGHT);
         }
 
         std::string buffer; // used to accumulate multi-line statements
@@ -149,7 +149,7 @@ int main(int argc, char *argv[])
 
 #if defined(_WIN32) || defined(_WIN64) // windows
     IronPathInit::Initer::initPath(IronPathManage::Control::windowsSettingsConfigPath());
-#else
+#else // unix(linux macos)
     IronPathInit::Initer::initPath(IronPathManage::Control::linuxSettingsConfigPath());
 #endif
 

@@ -6,14 +6,14 @@ namespace IronParser
     static const std::string bracket_left{"("};
     static const std::string bracket_right{")"};
 
-    /**
-     * @brief Extracts field definitions from a SQL query.
-     * 
-     * This function extracts field definitions from a SQL query by finding the content between parentheses.
-     * 
-     * @param query The SQL query to extract field definitions from.
-     * @return A vector of field definition strings.
-     */
+    /********************************************************************************************************
+     * @brief Extracts field definitions from a SQL query.                                                  *
+     *                                                                                                      *
+     * This function extracts field definitions from a SQL query by finding the content between parentheses.*
+     *                                                                                                      *
+     * @param query The SQL query to extract field definitions from.                                        *
+     * @return A vector of field definition strings.                                                        *
+     ********************************************************************************************************/
     static auto extractFieldDefinitions(const std::string &query) -> std::vector<std::string>
     {
         std::vector<std::string> field_definitions;
@@ -33,14 +33,13 @@ namespace IronParser
         return field_definitions;
     }
 
-    /**
-     * @brief Resolves field names from a SQL query.
-     * 
-     * This function extracts field names from a SQL query by parsing the field definitions.
-     * 
-     * @param query The SQL query to resolve field names from.
-     * @return A vector of field names.
-     */
+    /********************************************************************************************************
+     * @brief Resolves field names from a SQL query.                                                        *
+     * This function extracts field names from a SQL query by parsing the field definitions.                *
+     *                                                                                                      *
+     * @param query The SQL query to resolve field names from.                                              *
+     * @return A vector of field names.                                                                     *
+     ********************************************************************************************************/
     auto Resolver::resolveFieldNames(const std::string &query) -> std::vector<std::string>
     {
         std::vector<std::string> field_names;
@@ -57,14 +56,13 @@ namespace IronParser
         return field_names;
     }
 
-    /**
-     * @brief Resolves field types from a SQL query.
-     * 
-     * This function extracts field types from a SQL query by parsing the field definitions.
-     * 
-     * @param query The SQL query to resolve field types from.
-     * @return A vector of field types.
-     */
+    /********************************************************************************************************
+     * @brief Resolves field types from a SQL query.                                                        *
+     * This function extracts field types from a SQL query by parsing the field definitions.                *
+     *                                                                                                      *
+     * @param query The SQL query to resolve field types from.                                              *
+     * @return A vector of field types.                                                                     *
+     ********************************************************************************************************/
     auto Resolver::resolveFieldTypes(const std::string &query) -> std::vector<std::string>
     {
         std::vector<std::string> field_types;
@@ -81,18 +79,16 @@ namespace IronParser
         return field_types;
     }
 
-    /**
-     * @brief Resolves the table name from an INSERT statement.
-     * 
-     * This function extracts the table name from an INSERT INTO statement.
-     * 
-     * @param query The INSERT statement to resolve the table name from.
-     * @return The table name, or an empty string if not found.
-     */
+    /********************************************************************************************************
+     * @brief Resolves the table name from an INSERT statement.                                             *
+     * This function extracts the table name from an INSERT INTO statement.                                 *
+     *                                                                                                      *
+     * @param query The INSERT statement to resolve the table name from.                                    *
+     * @return The table name, or an empty string if not found.                                             *
+     ********************************************************************************************************/
     auto Resolver::resolveInsertTableName(const std::string &query) -> std::string
     {
         // INSERT INTO table_name (fields) VALUES (values);
-        // 跳过 "insert into " (12个字符)
         size_t start = 12;
         auto bracket_pos = query.find(bracket_left, start);
         if (bracket_pos == std::string::npos)
@@ -104,18 +100,16 @@ namespace IronParser
         return table_name;
     }
 
-    /**
-     * @brief Resolves field names from an INSERT statement.
-     * 
-     * This function extracts field names from the parentheses in an INSERT statement.
-     * 
-     * @param query The INSERT statement to resolve field names from.
-     * @return A vector of field names.
-     */
+    /*********************************************************************************************************
+     * @brief Resolves field names from an INSERT statement.                                                 *
+     * This function extracts field names from the parentheses in an INSERT statement.                       *
+     *                                                                                                       *
+     * @param query The INSERT statement to resolve field names from.                                        *
+     * @return A vector of field names.                                                                      *
+     *********************************************************************************************************/
     auto Resolver::resolveInsertFieldNames(const std::string &query) -> std::vector<std::string>
     {
         std::vector<std::string> field_names;
-        // 找到第一个括号 (fields)
         auto left_pos = query.find(bracket_left);
         auto right_pos = query.find(bracket_right);
         if (left_pos == std::string::npos || right_pos == std::string::npos)
@@ -136,19 +130,18 @@ namespace IronParser
         return field_names;
     }
 
-    /**
-     * @brief Resolves field values from an INSERT statement.
-     * 
-     * This function extracts field values from the VALUES clause of an INSERT statement,
-     * handling commas within quoted strings.
-     * 
-     * @param query The INSERT statement to resolve field values from.
-     * @return A vector of field values.
-     */
+    /********************************************************************************************************
+     * @brief Resolves field values from an INSERT statement.                                               *
+     * This function extracts field values from the VALUES clause of an INSERT statement,                   *
+     * handling commas within quoted strings.                                                               *
+     *                                                                                                      *
+     * @param query The INSERT statement to resolve field values from.                                      *
+     * @return A vector of field values.                                                                    *
+     ********************************************************************************************************/
     auto Resolver::resolveInsertFieldValues(const std::string &query) -> std::vector<std::string>
     {
         std::vector<std::string> field_values;
-        // 找到 VALUES 或 values
+
         auto values_pos = query.find("VALUES");
         if (values_pos == std::string::npos)
         {
@@ -158,7 +151,7 @@ namespace IronParser
         {
             return field_values;
         }
-        // 找到 VALUES 后面的括号
+
         auto left_pos = query.find(bracket_left, values_pos);
         auto right_pos = query.find(bracket_right, values_pos);
         if (left_pos == std::string::npos || right_pos == std::string::npos)
@@ -167,7 +160,6 @@ namespace IronParser
         }
         auto values_str = query.substr(left_pos + 1, right_pos - left_pos - 1);
 
-        // 手动解析，处理引号内的逗号
         std::string current_value;
         bool in_single_quote = false;
         bool in_double_quote = false;
@@ -188,9 +180,8 @@ namespace IronParser
             }
             else if (c == ',' && !in_single_quote && !in_double_quote)
             {
-                // 逗号在引号外，分割
                 IronHandle::Strings::strip(current_value);
-                // 移除引号
+
                 if ((current_value.size() >= 2 && current_value.front() == '\'' && current_value.back() == '\'') ||
                     (current_value.size() >= 2 && current_value.front() == '"' && current_value.back() == '"'))
                 {
@@ -205,7 +196,6 @@ namespace IronParser
             }
         }
 
-        // 处理最后一个值
         IronHandle::Strings::strip(current_value);
         if ((current_value.size() >= 2 && current_value.front() == '\'' && current_value.back() == '\'') ||
             (current_value.size() >= 2 && current_value.front() == '"' && current_value.back() == '"'))

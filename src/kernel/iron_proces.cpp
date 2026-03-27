@@ -1640,35 +1640,29 @@ namespace IronProces
         auto database_index{_IronInnerProces_::_Level::_Database::_obtainDatabaseIndex(database_name)};
         std::vector<std::vector<std::string>> merged_table_data;
 
-        // 首先获取第一个表的数据作为基础
         if (!table_names.empty())
         {
             auto first_table_index{_IronInnerProces_::_Level::_Table::_obtainTableIndex(database_name, table_names[0])};
             const auto &first_table = IronObject::Interface::databases[database_index].tables[first_table_index];
 
-            // 构建第一个表的数据
             for (const auto &row : first_table.values)
             {
                 merged_table_data.push_back(Detail::createMappedRow(first_table, row, _fields));
             }
 
-            // 处理剩余的表
             for (size_t i{1}; i < table_names.size(); ++i)
             {
                 auto current_table_index{_IronInnerProces_::_Level::_Table::_obtainTableIndex(database_name, table_names[i])};
                 const auto &current_table = IronObject::Interface::databases[database_index].tables[current_table_index];
 
-                // 查找公共字段
                 std::vector<std::string> common_fields = Detail::findCommonFields(current_table, _fields);
 
                 if (!common_fields.empty())
                 {
-                    // 有公共字段，使用连接方式
                     Detail::mergeWithJoin(current_table, merged_table_data, _fields, common_fields);
                 }
                 else
                 {
-                    // 无公共字段，简单追加
                     Detail::appendTableData(current_table, merged_table_data, _fields);
                 }
             }
@@ -1680,7 +1674,6 @@ namespace IronProces
             {
                 continue;
             }
-            // 计算每个字段的最大宽度 - update: 2026-03-19
             for (size_t i = 0; i < row.size() && i < _IronInnerProces_::_Level::_Link::datas_column_max.size(); ++i)
             {
                 int current_width = row[i].size();

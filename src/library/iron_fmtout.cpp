@@ -391,6 +391,11 @@ namespace IronFormatOut
     {
         auto [link_table_datas, link_table_fields]{IronProces::Gets::linkShowTable(database_name, table_names)};
 
+        if (link_table_datas.empty() || link_table_fields.empty())
+        {
+            return;
+        }
+
         auto field_widths = IronProces::Gets::linkShowTableMaximumWidthPerColumnField();
         auto row_widths = IronProces::Gets::linkShowTableMaximumWidthPerColumnData();
         std::vector<int> last_row_widths;

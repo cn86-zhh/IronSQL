@@ -58,7 +58,7 @@ SOURCE_FILES = \
 	$(SRC_DIR)/.path/iron_path_init.cpp \
 	$(SRC_DIR)/.ironfsystem/iron_file_system.cpp \
 	$(SRC_DIR)/psystem/iron_path_system.cpp \
-	$(SRC_DIR)/fsystem/ironsql_read_help_info.cpp \
+	$(SRC_DIR)/fsystem/iron_read_help_info.cpp \
 	$(SRC_DIR)/.linux/iron_linux_systempath.cpp \
 	$(SRC_DIR)/.windows/iron_windows_systempath.cpp
 

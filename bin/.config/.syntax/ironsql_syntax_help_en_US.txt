@@ -1,7 +1,5 @@
 [*] IronSQL Database Syntax Documentation
 [*] Date: March 20, 2026 10:37 PM
-[*] Author: Zhang Heng
-[*] Occupation: Geek
 [+] ------------------------------------
 [*]   Welcome to the IronSQL database syntax help documentation. We aim to design a personal,
 [*] non-industrial-grade data management system. This will be an extremely long process.

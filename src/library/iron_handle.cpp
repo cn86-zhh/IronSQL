@@ -69,7 +69,7 @@ namespace IronHandle
 
         std::string filtered_string{str};
 
-        // 查找第一个点号（database.table格式）
+        // Find the first dot (database.table format)
         auto first_dot = filtered_string.find(IronKeywds::Kw::dot_());
 
         std::string database_name;
@@ -77,9 +77,9 @@ namespace IronHandle
 
         if (first_dot != std::string::npos)
         {
-            // 提取数据库名
+            // Extract database name
             database_name = filtered_string.substr(0, first_dot);
-            // 去除空格
+            // Remove spaces
             size_t start = database_name.find_first_not_of(" ");
             if (start != std::string::npos)
             {
@@ -91,7 +91,7 @@ namespace IronHandle
                 database_name = database_name.substr(0, end + 1);
             }
 
-            // 查找to关键字
+            // Find 'to' keyword
             auto to_pos = filtered_string.find(IronKeywds::Kw::to_());
             if (to_pos == std::string::npos)
             {
@@ -99,9 +99,9 @@ namespace IronHandle
                 return tokens;
             }
 
-            // 提取第一个表名（在第一个点号和to之间）
+            // Extract first table name (between first dot and 'to')
             table1 = filtered_string.substr(first_dot + 1, to_pos - first_dot - 1);
-            // 去除空格
+            // Remove spaces
             start = table1.find_first_not_of(" ");
             if (start != std::string::npos)
             {
@@ -113,7 +113,7 @@ namespace IronHandle
                 table1 = table1.substr(0, end + 1);
             }
 
-            // 查找第二个点号
+            // Find second dot
             auto second_dot = filtered_string.find(IronKeywds::Kw::dot_(), to_pos);
             if (second_dot == std::string::npos)
             {
@@ -121,9 +121,9 @@ namespace IronHandle
                 return tokens;
             }
 
-            // 验证第二个数据库名
+            // Verify second database name
             std::string db_name_2 = filtered_string.substr(to_pos + 3, second_dot - to_pos - 3);
-            // 去除空格
+            // Remove spaces
             start = db_name_2.find_first_not_of(" ");
             if (start != std::string::npos)
             {
@@ -141,14 +141,14 @@ namespace IronHandle
                 return tokens;
             }
 
-            // 查找new关键字
+            // Find 'new' keyword
             auto new_pos = filtered_string.find(" new ", second_dot);
 
             if (new_pos != std::string::npos)
             {
-                // 提取第二个表名（在第二个点号和new之间）
+                // Extract second table name (between second dot and 'new')
                 table2 = filtered_string.substr(second_dot + 1, new_pos - second_dot - 1);
-                // 去除空格
+                // Remove spaces
                 start = table2.find_first_not_of(" ");
                 if (start != std::string::npos)
                 {
@@ -160,9 +160,9 @@ namespace IronHandle
                     table2 = table2.substr(0, end + 1);
                 }
 
-                // 提取新表名
+                // Extract new table name
                 new_table = filtered_string.substr(new_pos + 5);
-                // 去除空格
+                // Remove spaces
                 start = new_table.find_first_not_of(" ");
                 if (start != std::string::npos)
                 {
@@ -178,9 +178,9 @@ namespace IronHandle
             }
             else
             {
-                // 提取第二个表名（从第二个点号到结尾）
+                // Extract second table name (from second dot to end)
                 table2 = filtered_string.substr(second_dot + 1);
-                // 去除空格
+                // Remove spaces
                 start = table2.find_first_not_of(" ");
                 if (start != std::string::npos)
                 {
@@ -197,7 +197,7 @@ namespace IronHandle
         }
         else
         {
-            // 相对语句处理
+            // Relative statement processing
             auto to_pos = filtered_string.find(IronKeywds::Kw::to_());
             if (to_pos == std::string::npos)
             {
@@ -267,12 +267,12 @@ namespace IronHandle
     }
 
     /**
-     * @brief 计算字符串的显示宽度
+     * @brief Calculate the display width of a string
      *
-     * 对于ASCII字符，宽度为1；对于中文字符，宽度也为1
+     * For ASCII characters, width is 1; for Chinese characters, width is also 1
      *
-     * @param str 要计算宽度的字符串
-     * @return 字符串的显示宽度
+     * @param str The string to calculate width for
+     * @return The display width of the string
      */
     auto Strings::getDisplayWidth(const std::string &str) -> int
     {
@@ -281,25 +281,25 @@ namespace IronHandle
         {
             if (static_cast<unsigned char>(str[i]) < 0x80)
             {
-                // ASCII字符
+                // ASCII character
                 width++;
                 i++;
             }
             else if (static_cast<unsigned char>(str[i]) >= 0xE0)
             {
-                // 3字节UTF-8字符（中文字符）
+                // 3-byte UTF-8 character (Chinese character)
                 width++;
                 i += 3;
             }
             else if (static_cast<unsigned char>(str[i]) >= 0xC0)
             {
-                // 2字节UTF-8字符
+                // 2-byte UTF-8 character
                 width++;
                 i += 2;
             }
             else
             {
-                // 其他情况
+                // Other cases
                 width++;
                 i++;
             }
@@ -308,18 +308,27 @@ namespace IronHandle
     }
 
     /**
-     * @brief 从字符串中提取表名
+     * @brief Extract table names from a string
      *
-     * @param lstrs 包含表名的字符串
-     * @return 包含所有表名的向量
+     * @param lstrs String containing table names
+     * @return Vector containing all table names
      */
     auto Strings::getTableNames(const std::string &lstrs) -> std::vector<std::string>
     {
+        if (lstrs.empty())
+        {
+            return {};
+        }
+
         /* expected line: table1,table2,... */
         std::vector<std::string> table_names;
+        const static char space{' '};
+
+        std::string new_strs{lstrs};
+        new_strs.erase(std::remove(new_strs.begin(), new_strs.end(), space), new_strs.end()); /* move all of space to end position */
 
         std::string table_name;
-        for (auto c : lstrs)
+        for (auto c : new_strs)
         {
             if (c == ',')
             {

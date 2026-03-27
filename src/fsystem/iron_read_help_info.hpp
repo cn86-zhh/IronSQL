@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef IRONSQL_READ_HELP_INFO_HPP
-#define IRONSQL_READ_HELP_INFO_HPP
+#ifndef IRON_READ_HELP_INFO_HPP
+#define IRON_READ_HELP_INFO_HPP
 
 #include <filesystem>
 #include <vector>
@@ -28,4 +28,4 @@ namespace IronReadHelpInfo
 
 } // namespace IronReadHelpInfo
 
-#endif
+#endif // IRON_READ_HELP_INFO_HPP

@@ -22,6 +22,8 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/src/.windows
     ${CMAKE_SOURCE_DIR}/src/.linux
     ${CMAKE_SOURCE_DIR}/src/.ironfsystem
+    ${CMAKE_SOURCE_DIR}/src/psystem
+    ${CMAKE_SOURCE_DIR}/src/fsystem
 )
 
 # 源文件列表
@@ -51,6 +53,8 @@ set(SOURCE_FILES
     ${CMAKE_SOURCE_DIR}/src/.path/iron_path_init.cpp
     ${CMAKE_SOURCE_DIR}/src/.linux/iron_linux_systempath.cpp
     ${CMAKE_SOURCE_DIR}/src/.windows/iron_windows_systempath.cpp
+    ${CMAKE_SOURCE_DIR}/src/psystem/iron_path_system.cpp
+    ${CMAKE_SOURCE_DIR}/src/fsystem/iron_read_help_info.cpp
 )
 
 # 可执行文件

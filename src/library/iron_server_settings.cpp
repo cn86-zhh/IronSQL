@@ -68,6 +68,11 @@ void ironSettingsDisable(const std::string &settings_sentence, bool &ref_result)
     {
     }
 
+    // change language
+    if (settings_sentence.substr(0, 9) == "set -lang")
+    {
+    }
+
     // other unknown settings setting reference parameter to FALSE
     else
     {

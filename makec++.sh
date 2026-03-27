@@ -24,7 +24,7 @@ readonly TIME
 # Welcome prompt
 function Welcome()
 {
-    local name0="${C}zhh${E}"
+    local name0="${C}cn86-zhh${E}"
     local name1="${C}cn86-zhh${E}"
     
     readonly name0
@@ -110,7 +110,7 @@ function StartCompileIronSQL()
         "${SRC}/.path/iron_path_init.cpp"
         "${SRC}/.ironfsystem/iron_file_system.cpp"
         "${SRC}/psystem/iron_path_system.cpp"
-        "${SRC}/fsystem/ironsql_read_help_info.cpp"
+        "${SRC}/fsystem/iron_read_help_info.cpp"
         "${SRC}/.linux/iron_linux_systempath.cpp"
         "${SRC}/.windows/iron_windows_systempath.cpp"
     )

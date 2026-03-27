@@ -1,0 +1,11 @@
+欢迎使用 IronSQL V 0.0.1
+作者: zhh
+help -s;                                [-] 获取更多帮助详情。
+help -p;                                [-] 显示 IronSQL 项目进度。
+quit;                                   [-] 退出 IronSQL。
+exit;                                   [-] 退出 IronSQL。
+#, --, //                               [-] 注释行。
+IronSQL 网站与仓库
+https://www.gethub.com/cn86-zhh/IronSQL [-] github 仓库.
+https://www.gitee.com/cn86-zhh/IronSQL  [-] gitee 仓库.
+https://www.ironsql.com.org             [-] 官方网站。

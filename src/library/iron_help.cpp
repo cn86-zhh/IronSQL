@@ -29,7 +29,6 @@ namespace IronHelpColor
 
     /******************************************************************************************
      * @brief Prints a highlighted string with the specified color.                           *
-     *                                                                                        *
      * This function prints a message with the specified color code for highlighting.         *
      *                                                                                        *
      * @param color The color code to use for highlighting.                                   *
@@ -48,16 +47,25 @@ namespace IronHelp
     std::mutex ShowHelpInformation::hmtx; /* Initialize the mutex */
 
     static bool _enableHelpHighlight{false};
-    static const std::string ZH_CN = "zh_cn";
+
+    static const std::string ZH_CN{"zh_cn"};
+    static std::string language_tp; /* set language environment variable */
 
     /******************************************************************************************
      * @brief Sets the highlight status for help messages.                                    *
-     *                                                                                        *
      * This function sets the highlight status for help messages.                             *
      *                                                                                        *
      * @param enable_highlight Whether to enable color highlighting.                          *
      ******************************************************************************************/
     void ShowHelpInformation::setHighlight(const bool &enable_highlight) { _enableHelpHighlight = enable_highlight; }
+
+    /******************************************************************************************
+     * @brief Sets the language environment variable.                                         *
+     * This function sets the language environment variable.                                  *
+     *                                                                                        *
+     * @param lang The language to set.                                                       *
+     ******************************************************************************************/
+    void ShowHelpInformation::setLanguage(const std::string &lang) { language_tp = lang; }
 
     /******************************************************************************************
      * @brief The vector of available colors for highlighting.                                *
@@ -66,7 +74,6 @@ namespace IronHelp
 
     /******************************************************************************************
      * @brief Gets a random color from the COLORS vector.                                     *
-     *                                                                                        *
      * This function returns a randomly selected color code from the predefined COLORS vector *
      *                                                                                        *
      * @return A random color code                                                            *
@@ -150,6 +157,30 @@ namespace IronHelp
         tarfile.close();
     }
 
+    /******************************************************************************************
+     * @brief To obtain the final and determinable path, the parameters only need to be       *
+     * passed in as "language type", "default English text file", and "other language files"  *
+     *                                                                                        *
+     * @param lang choose language, default is English.                                       *
+     *                                                                                        *
+     * @param fname_en_us default English text file.                                          *
+     * @param fname_other other language files.                                               *
+     * @return std::filesystem::path the final and determinable path.                         *
+     ******************************************************************************************/
+    static auto _getTargetHelpFilePath(const std::string &lang, const std::string &fname_en_us, const std::string &fname_other)
+        -> std::filesystem::path
+    {
+        auto platform_path = _chooseLanguageContent(
+            IPath::Psm::returnPath(
+                IronPathManage::Control::windowsSettingsConfigPath() / fname_other,
+                IronPathManage::Control::linuxSettingsConfigPath() / fname_other),
+            IPath::Psm::returnPath(
+                IronPathManage::Control::windowsSettingsConfigPath() / fname_en_us,
+                IronPathManage::Control::linuxSettingsConfigPath() / fname_en_us),
+            lang);
+        return platform_path;
+    }
+
     /*********************************************************************************************************
      * ***************************************************************************************************** *
      * *                               FROM FILE READ HELP INFORMATION                                     * *
@@ -167,90 +198,117 @@ namespace IronHelp
     {
         std::lock_guard<std::mutex> lock(hmtx); // Lock the mutex to ensure thread safety
 
-        std::filesystem::path sure_help_file;
-
-        // default output is english
-#if defined(_WIN32) || defined(_WIN64) // windows
-        std::filesystem::path help_file{IronPathManage::Control::windowsSettingsConfigPath() / "Ironsql_syntax_help_en_US.txt"};
-#else
-        std::filesystem::path help_file{IronPathManage::Control::linuxSettingsConfigPath() / "Ironsql_syntax_help_en_US.txt"};
-#endif
-
-        if (lang == ZH_CN)
-        {
-#if defined(_WIN32) || defined(_WIN64) // windows
-            std::filesystem::path help_file{IronPathManage::Control::windowsSettingsConfigPath() / "Ironsql_syntax_help_zh_CN.txt"};
-            sure_help_file = help_file;
-#else
-            std::filesystem::path help_file{IronPathManage::Control::linuxSettingsConfigPath() / "Ironsql_syntax_help_zh_CN.txt"};
-            sure_help_file = help_file;
-#endif
-        }
-        else
-        {
-            sure_help_file = help_file;
-        }
-
-        if (!std::filesystem::exists(sure_help_file))
-        {
-            std::cerr << "Help file not found ! please go to the project official website to get the help file." << std::endl;
-            return;
-        }
-
-        std::fstream file(sure_help_file.string(), std::ios::in | std::ios::binary);
-        if (!file.is_open())
-        {
-            std::cerr << "Failed to open help file : " << sure_help_file.string() << std::endl;
-            return;
-        }
-
-        // output help file content
-        std::string line;
-
-        // if true: out highlight help file content, else: out help file content as is
-        if (enable_highlight || _enableHelpHighlight)
-        {
-            while (std::getline(file, line))
-            {
-                Color::Ht::_printHighlightString(_getRandomColor(), line);
-            }
-            file.close();
-            return;
-        }
-
-        while (std::getline(file, line))
-        {
-            std::cout << line << std::endl;
-        }
-        file.close();
-    }
-
-    /*********************************************************************************************************
-     * @brief Show welcome message.                                                                          *
-     *                                                                                                       *
-     * @param lang Language of the welcome message.                                                          *
-     * @param enable_highlight Whether to enable color highlighting.                                         *
-     *********************************************************************************************************/
-    void ShowHelpInformation::showWelcomeMessage(const std::string &lang, const bool &enable_highlight = false)
-    {
-        std::lock_guard<std::mutex> lock(hmtx); // Lock the mutex to ensure thread safety
-
-        auto platform_path = _chooseLanguageContent(
-            IPath::Psm::returnPath(
-                IronPathManage::Control::linuxSettingsConfigPath() / "iron_welcome_zh_CN.txt",
-                IronPathManage::Control::linuxSettingsConfigPath() / "iron_welcome_zh_CN.txt"),
-            IPath::Psm::returnPath(
-                IronPathManage::Control::windowsSettingsConfigPath() / "iron_welcome_en_US.txt",
-                IronPathManage::Control::windowsSettingsConfigPath() / "iron_welcome_en_US.txt"),
-            lang);
+        std::filesystem::path platform_path{_getTargetHelpFilePath(
+            lang, "ironsql_syntax_help_en_US.txt", "ironsql_syntax_help_zh_CN.txt")};
 
         std::fstream file(platform_path.string(), std::ios::in | std::ios::binary);
 
         if (!_openFileStates(file))
         {
-            std::cerr << "Failed to open welcome file : " << platform_path.string() << std::endl;
+            std::cerr << "Failed to open help file : " << platform_path.string() << std::endl;
             return;
         }
+
+        _outFileContent(file, enable_highlight);
+    }
+
+    /*********************************************************************************************************
+     * @brief Show welcome message.                                                                          *
+     *                                                                                                       *
+     * @param enable_highlight Whether to enable color highlighting.                                         *
+     *********************************************************************************************************/
+    void ShowHelpInformation::showWelcomeMessage(const bool &enable_highlight)
+    {
+        std::lock_guard<std::mutex> lock(hmtx); // Lock the mutex to ensure thread safety
+
+        std::filesystem::path platform_path{_getTargetHelpFilePath(language_tp, "iron_welcome_en_US.txt", "iron_welcome_zh_CN.txt")};
+
+        std::fstream file(platform_path.string(), std::ios::in | std::ios::binary);
+
+        if (!_openFileStates(file))
+        {
+            std::cerr << "Failed to open welcome help file : " << platform_path.string() << std::endl;
+            return;
+        }
+
+        _outFileContent(file, enable_highlight);
+    }
+
+    void ShowHelpInformation::showHelpGuide(const bool &enable_highlight)
+    {
+        std::lock_guard<std::mutex> lock(hmtx); // Lock the mutex to ensure thread safety
+
+        std::cout << "Null Info" << std::endl;
+    }
+
+    void ShowHelpInformation::showHelpMore(const std::string &lang, const std::string &query_keyword, const bool &enable_highlight)
+    {
+        std::lock_guard<std::mutex> lock(hmtx); // Lock the mutex to ensure thread safety
+
+        if (query_keyword.empty())
+        {
+            std::cerr << "Error: Query keyword is empty. You must input a query keyword.\n"
+                         "for example: help -syntax --more-zh_cn-create"
+                      << std::endl;
+            return;
+        }
+
+        const std::string prefix_zn_cn{"ironsql_syntax_zh_CN_"};
+        const std::string prefix_en_us{"ironsql_syntax_en_US_"};
+        const std::string suffix_txt{".txt"};
+
+        std::string fname{prefix_en_us + query_keyword + suffix_txt}; /* default en_US */
+        if (lang == "zh_cn")
+        {
+            fname = prefix_zn_cn + query_keyword + suffix_txt;
+        }
+
+        /* get help file path directory */
+        auto platform_path{IPath::Psm::returnPath(IronPathManage::Control::windowsSettingsConfigPath(),
+                                                  IronPathManage::Control::linuxSettingsConfigPath())};
+
+        if (!std::filesystem::exists(platform_path)) /* check help file path exists */
+        {
+            std::cerr << "File path not exists: " << platform_path.string() << std::endl;
+            return;
+        }
+
+        if (!std::filesystem::is_directory(platform_path)) /* check help file path is directory */
+        {
+            std::cerr << "File path is not directory: " << platform_path.string() << std::endl;
+            return;
+        }
+
+        /* */
+        bool find_state{false};
+        for (const auto &entry : std::filesystem::directory_iterator(platform_path))
+        {
+            if (entry.is_regular_file())
+            {
+                if (entry.path().filename().string() == fname)
+                {
+                    find_state = true;
+                    break;
+                }
+            }
+        }
+
+        if (!find_state) /* check help file exists */
+        {
+            std::cerr << "Help file not exists: " << fname << std::endl;
+            return;
+        }
+
+        std::filesystem::path file_path{platform_path / fname};
+        std::fstream file(file_path.string(), std::ios::in | std::ios::binary);
+
+        if (!_openFileStates(file)) /* check help file open success */
+        {
+            std::cerr << "Failed to open help file : " << file_path.string() << std::endl;
+            return;
+        }
+
+        _outFileContent(file, enable_highlight); /* output help file content */
     }
 
 } // namespace IronHelp
