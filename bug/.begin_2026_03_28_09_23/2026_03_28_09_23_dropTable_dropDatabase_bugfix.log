@@ -1,0 +1,209 @@
+================================================================================
+IronSQL Bug 修复记录
+================================================================================
+
+日期: 2026-03-28
+时间: 09:23
+版本: 0.0.1
+作者: AI Assistant
+
+================================================================================
+1. 问题描述
+================================================================================
+
+本次修复了两个 Bug：
+
+Bug 1: drop table 后表数量计数器未更新
+Bug 2: drop database 后索引映射未正确更新
+
+================================================================================
+2. Bug 1 详细分析
+================================================================================
+
+2.1 问题表现
+
+执行 `drop table notifications;` 后：
+- `show tables;` 显示只有 5 个表（notifications 已被删除）
+- 但 `get tables number;` 仍然返回 6，而不是 5
+
+2.2 问题原因
+
+在 `src/kernel/iron_proces.cpp` 的 `dropTable` 函数中：
+- 删除表时只调用了 `_synchronizationTableIndexToMap()` 同步表索引映射
+- 没有更新 `IronStatus::Manage::tables_number` 全局状态变量
+
+而 `get tables number` 命令直接读取的是 `IronStatus::Manage::tables_number`，
+这个值只在 `useDatabase` 时才被设置。
+
+2.3 修复方案
+
+在 `dropTable` 函数中，删除表后需要更新当前数据库的表数量：
+
+```cpp
+// update table number
+if (IronStatus::Manage::getDatabaseName() == database_name)
+{
+    IronStatus::Manage::settingTablesNumber(
+        _IronInnerProces_::_Level::_Table::_obtainTableNames(database_name).size()
+    );
+}
+```
+
+================================================================================
+3. Bug 2 详细分析
+================================================================================
+
+3.1 问题表现
+
+执行 `drop database students;` 后：
+- `show databases;` 显示 students 已删除
+- 但后续访问 `users` 数据库的表数据时，程序崩溃
+- 错误信息：`Assertion '__n < this->size()' failed`
+
+3.2 问题原因
+
+在 `_synchronizationDatabaseIndexToMap` 函数中，重建数据库索引时使用了错误的方法：
+
+```cpp
+// 错误的实现
+auto database_names{_obtainDatabaseNames()};
+for (int index{0}; index < database_names.size(); index++)
+{
+    databases_map[database_names[index]] = index;
+}
+```
+
+关键问题：`_obtainDatabaseNames()` 遍历 `databases_map`（`std::unordered_map`），
+而 `unordered_map` 的遍历顺序不保证与插入顺序一致！
+
+这导致重建的索引与实际的 `databases` 向量顺序不匹配，所有数据库的索引都错了。
+
+3.3 数据库初始顺序
+
+```
+索引 0: students
+索引 1: users
+索引 2: projects
+索引 3: task
+索引 4: systems
+索引 5: records
+索引 6: ecommerce
+```
+
+删除 `students`（索引 0）后，`users` 的实际索引变成 0，
+但 `databases_map` 可能被错误地设置为其他值。
+
+3.4 修复方案
+
+直接遍历 `databases` 向量来重建映射，确保顺序一致：
+
+```cpp
+void _Level::_Database::_synchronizationDatabaseIndexToMap(const std::string &database_name)
+{
+    databases_map.erase(database_name);
+    
+    // 直接遍历 databases 向量，确保顺序与向量一致
+    for (int i = 0; i < IronObject::Interface::databases.size(); ++i)
+    {
+        databases_map[IronObject::Interface::databases[i].name] = i;
+    }
+}
+```
+
+================================================================================
+4. 代码修改
+================================================================================
+
+修改了以下文件：
+
+(1) e:\dev\IronSQL\src\kernel\iron_proces.cpp
+   - 修复了 `_synchronizationDatabaseIndexToMap` 函数
+   - 在 `dropTable` 函数中添加了更新表数量的代码
+
+================================================================================
+5. 测试验证
+================================================================================
+
+5.1 测试文件
+
+创建了两个测试文件：
+- test_bug1.sql: 测试 drop table 后表数量计数器
+- test_bug2.sql: 测试 drop database 后索引映射
+
+5.2 Bug 1 测试结果
+
+```
+删除前: tables number: 6
+删除后: tables number: 5  <- 正确更新！
+```
+
+5.3 Bug 2 测试结果
+
+```
+删除 students 数据库后:
+- show databases: 显示 6 个数据库
+- show datas user_roles: 正确显示 3 行数据
+- select * from user_roles: 正确显示 3 行数据
+- select * from users.user_roles: 跨数据库访问也正确
+- 没有崩溃！
+```
+
+================================================================================
+6. 修复效果
+================================================================================
+
+6.1 Bug 1 修复效果
+
+修复前：
+- 删除表后，表数量显示错误
+- 需要重新执行 `use database` 才能更新数量
+
+修复后：
+- 删除表后，表数量立即更新
+- 无需额外操作
+
+6.2 Bug 2 修复效果
+
+修复前：
+- 删除数据库后，其他数据库的索引映射错误
+- 访问其他数据库会导致数据错乱或程序崩溃
+
+修复后：
+- 删除数据库后，所有数据库的索引映射正确更新
+- 访问其他数据库正常工作
+
+================================================================================
+7. 技术要点
+================================================================================
+
+7.1 std::unordered_map 遍历顺序问题
+
+`std::unordered_map` 是基于哈希表实现的，其遍历顺序不保证与插入顺序一致。
+当需要根据向量索引重建映射时，应该直接遍历向量，而不是遍历 map。
+
+7.2 状态同步问题
+
+在执行删除操作时，需要确保所有相关的状态都被正确更新：
+- 向量中的元素
+- 索引映射
+- 计数器
+- 其他派生状态
+
+================================================================================
+8. 总结
+================================================================================
+
+本次修复成功解决了两个重要的 Bug：
+
+Bug 1: drop table 后表数量计数器未更新
+- 原因：删除表时未更新全局状态变量
+- 修复：在 dropTable 函数中添加状态更新代码
+
+Bug 2: drop database 后索引映射未正确更新
+- 原因：使用 unordered_map 的遍历顺序重建索引，导致顺序不一致
+- 修复：直接遍历 databases 向量重建索引映射
+
+这两个 Bug 都属于状态同步问题，在删除操作后没有正确维护相关的映射和计数器。
+修复后，IronSQL 的稳定性和数据一致性得到了显著提升。
+
+================================================================================
