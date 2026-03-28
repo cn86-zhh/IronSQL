@@ -1,0 +1,25 @@
+show databases;
+use users;
+show tables;
+show datas user_roles;
+get current database; get tables number;
+use systems;
+get current database; get tables number;
+show tables;
+select * from users.user_roles;
+use users;
+drop table notifications;
+show tables;
+get current database; get tables number;
+exit;
+
+show databases;
+drop database students;
+use users;
+show datas user_roles;
+select * from user_roles;
+get current database; get tables number;
+use systems;
+select * from users.user_roles;
+show tables;
+exit;

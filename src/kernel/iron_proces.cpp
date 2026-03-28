@@ -201,6 +201,12 @@ namespace _IronInnerProces_
             ios::err(kwl::fatal() + "delete database failed: " + database_name);
             log::IRON_DEBUG("delete database failed: " + database_name);
         }
+
+        // rebuild database index
+        for (int index{0}; index < IronObject::Interface::databases.size(); index++)
+        {
+            databases_map[IronObject::Interface::databases[index].name] = index;
+        }
     }
 
     /**
@@ -1018,6 +1024,12 @@ namespace IronProces
 
         // delete map mapping to keep synchronization
         _IronInnerProces_::_Level::_Table::_synchronizationTableIndexToMap(database_name, table_name);
+
+        // update table number
+        if (IronStatus::Manage::getDatabaseName() == database_name)
+        {
+            IronStatus::Manage::settingTablesNumber(_IronInnerProces_::_Level::_Table::_obtainTableNames(database_name).size());
+        }
     }
 
     /**
