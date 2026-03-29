@@ -234,13 +234,59 @@ namespace IronHelp
         _outFileContent(file, enable_highlight);
     }
 
+    /*********************************************************************************************************
+     * @brief Show help guide.                                                                               *
+     *                                                                                                       *
+     * @param enable_highlight Whether to enable color highlighting.                                         *
+     *********************************************************************************************************/
     void ShowHelpInformation::showHelpGuide(const bool &enable_highlight)
     {
         std::lock_guard<std::mutex> lock(hmtx); // Lock the mutex to ensure thread safety
 
-        std::cout << "Null Info" << std::endl;
+        const std::string prefix_zn_cn{"iron_help_guide_zh_CN.txt"};
+        const std::string prefix_en_us{"iron_help_guide_en_US.txt"};
+
+        std::string fname{prefix_en_us}; /* default en_US */
+        if (language_tp == "zh_cn")
+        {
+            fname = prefix_zn_cn;
+        }
+
+        /* get help file path directory */
+        auto platform_path{IPath::Psm::returnPath(IronPathManage::Control::windowsSettingsConfigPath(),
+                                                  IronPathManage::Control::linuxSettingsConfigPath())};
+
+        if (!std::filesystem::exists(platform_path)) /* check help file path exists */
+        {
+            std::cerr << "File path not exists: " << platform_path.string() << std::endl;
+            return;
+        }
+
+        if (!std::filesystem::is_directory(platform_path)) /* check help file path is directory */
+        {
+            std::cerr << "File path is not directory: " << platform_path.string() << std::endl;
+            return;
+        }
+
+        std::filesystem::path file_path{platform_path / fname};
+        std::fstream file(file_path.string(), std::ios::in | std::ios::binary);
+
+        if (!_openFileStates(file)) /* check help file open success */
+        {
+            std::cerr << "Failed to open help file : " << file_path.string() << std::endl;
+            return;
+        }
+
+        _outFileContent(file, enable_highlight); /* output help file content */
     }
 
+    /*********************************************************************************************************
+     * @brief Show help more information.                                                                    *
+     *                                                                                                       *
+     * @param lang Language of the help information.                                                         *
+     * @param query_keyword Query keyword for the help information.                                          *
+     * @param enable_highlight Whether to enable color highlighting.                                         *
+     *********************************************************************************************************/
     void ShowHelpInformation::showHelpMore(const std::string &lang, const std::string &query_keyword, const bool &enable_highlight)
     {
         std::lock_guard<std::mutex> lock(hmtx); // Lock the mutex to ensure thread safety
