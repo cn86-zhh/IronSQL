@@ -37,11 +37,14 @@ set(SOURCE_FILES
     ${CMAKE_SOURCE_DIR}/src/library/iron_fmtout.cpp
     ${CMAKE_SOURCE_DIR}/src/library/iron_parser.cpp
     ${CMAKE_SOURCE_DIR}/src/library/iron_help.cpp
+    ${CMAKE_SOURCE_DIR}/src/library/iron_langs.cpp
     ${CMAKE_SOURCE_DIR}/src/library/iron_pathfs.cpp
     ${CMAKE_SOURCE_DIR}/src/release/iron_object.cpp
     ${CMAKE_SOURCE_DIR}/src/kernel/iron_proces.cpp
+    ${CMAKE_SOURCE_DIR}/src/kernel/iron_proces_attribute.cpp
     ${CMAKE_SOURCE_DIR}/src/kernel/iron_keywds.cpp
     ${CMAKE_SOURCE_DIR}/src/kernel/iron_verify.cpp
+    ${CMAKE_SOURCE_DIR}/src/kernel/iron_verify_att0.cpp
     ${CMAKE_SOURCE_DIR}/src/kernel/iron_syntax.cpp
     ${CMAKE_SOURCE_DIR}/src/logsystem/iron_logsystem.cpp
     ${CMAKE_SOURCE_DIR}/src/stdiostreams/iron_stdout.cpp

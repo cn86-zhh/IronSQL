@@ -43,11 +43,14 @@ SOURCE_FILES = \
 	$(SRC_DIR)/library/iron_fmtout.cpp \
 	$(SRC_DIR)/library/iron_parser.cpp \
 	$(SRC_DIR)/library/iron_help.cpp \
+	$(SRC_DIR)/library/iron_langs.cpp \
 	$(SRC_DIR)/library/iron_pathfs.cpp \
 	$(SRC_DIR)/release/iron_object.cpp \
 	$(SRC_DIR)/kernel/iron_proces.cpp \
+	$(SRC_DIR)/kernel/iron_proces_attribute.cpp \
 	$(SRC_DIR)/kernel/iron_keywds.cpp \
 	$(SRC_DIR)/kernel/iron_verify.cpp \
+	$(SRC_DIR)/kernel/iron_verify_att0.cpp \
 	$(SRC_DIR)/kernel/iron_syntax.cpp \
 	$(SRC_DIR)/logsystem/iron_logsystem.cpp \
 	$(SRC_DIR)/stdiostreams/iron_stdout.cpp \
