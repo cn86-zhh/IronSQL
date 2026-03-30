@@ -74,11 +74,13 @@ init_copy_new_files() {
 
 main() {
     # 0
-    ot "This script suitable for windows git-bash!"
-    ot "Start copy config files to ${TARGETD}"
-    ot "attention: windows git-bash can not delete using rm -rf directory!"
-    ot "config directory can not sub directory!"
-    ot "run time: $(date '+%Y-%m-%d %H:%M:%S')"
+    ot "+---------------------------------------------------------------------+"
+    ot "| This script suitable for windows git-bash!                          |"
+    ot "| Start copy config files to ${TARGETD}                 |"
+    ot "| attention: windows git-bash can not delete using rm -rf directory!  |"
+    ot "| config directory can not sub directory!                             |"
+    ot "| run time: $(date '+%Y-%m-%d %H:%M:%S')                                       |"
+    ot "+---------------------------------------------------------------------+"
     
     # 1
     if ! init_check; then
